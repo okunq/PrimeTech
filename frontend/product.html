@@ -19,7 +19,7 @@
                     </li>
                     <li class="cart_link">
                         <a href="#" id="open_cart_btn" style="color: white; display: flex; align-items: center; gap: 10px;">
-                        <!-- Якщо є іконка, додай її сюди: <img src="img/cart.svg" alt="cart"> -->
+                        
                         🛒 Кошик
                         </a>
                     </li>
@@ -33,20 +33,20 @@
     </header>
     <div class="product_page container">
     
-        <!-- Хлібні крихти (Навігація) -->
+        
         <div class="breadcrumbs">
             <a href="catalog.html">Каталог</a> > <a href="#">Ноутбуки</a> > 
             <span>ASUS ROG Strix</span>
         </div>
 
-        <!-- Головний блок товару -->
+        
         <div class="product_main">
-            <!-- Ліва частина: Велика картинка -->
+            
             <div class="product_gallery">
                 <img src="img/laptop.jpg" alt="Ігровий Ноутбук ASUS ROG Strix">
             </div>
 
-            <!-- Права частина: Інформація та покупка -->
+            
             <div class="product_details">
                 <h1 class="product_title_large">Ігровий Ноутбук ASUS ROG Strix 15.6"</h1>
                 <div class="product_status">В наявності</div>
@@ -121,7 +121,7 @@
         </div>
         
         <div class="cart_items">
-            <!-- Приклад доданого товару -->
+            
             <div class="cart_item">
                 <img src="img/laptop.jpg" alt="Ноутбук">
                 <div class="cart_item_info">
@@ -140,42 +140,42 @@
             <a href="checkout.html" class="checkout_btn">Оформити замовлення</a>
         </div>
     </div>
-    <!-- ================= КІНЕЦЬ КОШИКА ================= -->
+    
 
-    <!-- СКРИПТ ДЛЯ ВІДКРИТТЯ/ЗАКРИТТЯ -->
+    
     <script>
         const openCartBtn = document.getElementById('open_cart_btn');
         const closeCartBtn = document.getElementById('close_cart_btn');
         const cartPanel = document.getElementById('cart_panel');
         const cartOverlay = document.getElementById('cart_overlay');
-        const buyBtns = document.querySelectorAll('.buy_btn_large'); // Кнопка на сторінці товару
+        const buyBtns = document.querySelectorAll('.buy_btn_large'); 
 
-        // Функція відкриття
+        
         function openCart(e) {
             e.preventDefault();
             cartPanel.classList.add('active');
             cartOverlay.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Забороняємо скролити сторінку під кошиком
+            document.body.style.overflow = 'hidden'; 
         }
 
-        // Функція закриття
+        
         function closeCart() {
             cartPanel.classList.remove('active');
             cartOverlay.classList.remove('active');
-            document.body.style.overflow = ''; // Повертаємо скрол
+            document.body.style.overflow = ''; 
         }
 
-        // Вішаємо події на кліки
+        
         if(openCartBtn) openCartBtn.addEventListener('click', openCart);
         if(closeCartBtn) closeCartBtn.addEventListener('click', closeCart);
         if(cartOverlay) cartOverlay.addEventListener('click', closeCart);
         
-        // Відкривати кошик також при натисканні "В кошик" на сторінці товару
+        
         buyBtns.forEach(btn => btn.addEventListener('click', openCart));
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-            // 1. Читаємо ID товару з адресного рядка браузера (наприклад, ?id=1)
+            
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id');
 
@@ -186,7 +186,7 @@
             }
 
             try {
-                // 2. Робимо запит до сервера за конкретним товаром
+                
                 const response = await fetch(`/api/products/${productId}`);
                 
                 if (!response.ok) {
@@ -195,27 +195,27 @@
 
                 const product = await response.json();
 
-                // 3. Підставляємо дані товару в HTML сторінки
+                
                 document.querySelector('.product_title_large').textContent = product.name;
                 document.querySelector('.product_price_large').textContent = `${product.price} ₴`;
                 document.querySelector('.product_short_desc').innerHTML = `<p style="white-space: pre-line;">${product.description || 'Опис відсутній.'}</p>`;
                 
-                // Знаходимо картинку в галереї та міняємо її
+                
                 const productImage = document.querySelector('.product_gallery img');
                 if (productImage) {
                     productImage.src = product.image_url;
                     productImage.alt = product.name;
                 }
 
-                // Змінюємо статус (В наявності / Немає)
+                
                 const statusSpan = document.querySelector('.product_status');
                 if (statusSpan) {
                     statusSpan.textContent = product.status;
                     statusSpan.style.color = product.status === 'В наявності' ? '#4CAF50' : '#F44336';
                 }
 
-                // 4. Оновлюємо кнопку "Купити", щоб вона додавала правильний товар у кошик
-                // (Використовуємо функцію addToCart з твого script.js)
+                
+                
                 const buyBtn = document.querySelector('.buy_btn_large');
                 if (buyBtn) {
                     buyBtn.setAttribute('onclick', `addToCart(${product.id}, '${product.name}', ${product.price}, '${product.image_url}')`);
@@ -229,7 +229,7 @@
 
         let selectedRating = 0;
 
-// Логіка вибору зірок
+
 document.querySelectorAll('.star').forEach(star => {
     star.onmouseover = function() { highlightStars(this.dataset.v); }
     star.onmouseout = function() { highlightStars(selectedRating); }
@@ -242,11 +242,11 @@ function highlightStars(v) {
     });
 }
 
-// Показуємо форму лише якщо юзер увійшов
+
 const user = JSON.parse(localStorage.getItem('user'));
 if(user) document.getElementById('review_form_container').style.display = 'block';
 
-// Відправка відгуку
+
 document.getElementById('submit_review_btn').onclick = async () => {
     const comment = document.getElementById('review_text').value;
     if(!selectedRating || !comment) return alert("Оберіть рейтинг та напишіть текст!");
@@ -259,7 +259,7 @@ document.getElementById('submit_review_btn').onclick = async () => {
     location.reload();
 };
 
-// Завантаження відгуків
+
 async function loadReviews() {
     const res = await fetch(`/api/reviews/${productId}`);
     const reviews = await res.json();

@@ -14,7 +14,6 @@ html, body {
     min-height: 100vh;
     background-repeat: no-repeat;
     
-    /* ЦІ ТРИ РЯДКИ ЗАЛІЗНО ВБИВАЮТЬ БІЛУ ПОЛОСУ: */
     width: 100%;
     max-width: 100vw;
     overflow-x: hidden;
@@ -456,7 +455,6 @@ header nav ul li.catalog_link:hover .mega_menu {
     font-weight: 700;
     color: #ffffff;
     margin-top: auto; 
-    /* margin-bottom: 15px; - це можна прибрати, якщо кнопки під нею більше немає */
 }
 
 .buy_btn {
@@ -527,7 +525,6 @@ header nav ul li.catalog_link:hover .mega_menu {
     object-fit: contain;
 }
 
-/* Права колонка з інфою */
 .product_details {
     flex: 1;
     display: flex;
@@ -590,7 +587,7 @@ header nav ul li.catalog_link:hover .mega_menu {
     line-height: 1.6;
 }
 
-/* Таблиця характеристик */
+/*таблиця характеристик */
 .product_specs {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.05);
@@ -663,27 +660,26 @@ header nav ul li.catalog_link:hover .mega_menu {
     visibility: visible;
 }
 
-/* Сама бокова панель */
 .cart_panel {
     position: fixed;
     top: 0;
-    right: -100%; /* Ховаємо панель за правим краєм екрану */
+    right: -100%; 
     width: 400px;
-    height: 100vh; /* На всю висоту вікна */
+    height: 100vh; 
     background: rgba(20, 20, 20, 0.95);
     border-left: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: -10px 0 40px rgba(0,0,0,0.8);
-    z-index: 1000; /* Поверх overlay */
+    z-index: 1000; 
     transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     display: flex;
     flex-direction: column;
 }
 
 .cart_panel.active {
-    right: 0; /* Виїжджає на екран */
+    right: 0; 
 }
 
-/* Шапка кошика */
+/* шапка кошика */
 .cart_header {
     display: flex;
     justify-content: space-between;
@@ -710,17 +706,17 @@ header nav ul li.catalog_link:hover .mega_menu {
     color: #ff4d4d;
 }
 
-/* Область з товарами */
+/*область з товарами */
 .cart_items {
     flex: 1;
     padding: 25px;
-    overflow-y: auto; /* Додаємо скрол, якщо товарів багато */
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-/* Дизайн одного товару в кошику */
+/*дизайн одного товару в кошику */
 .cart_item {
     display: flex;
     gap: 15px;
@@ -773,7 +769,7 @@ header nav ul li.catalog_link:hover .mega_menu {
     color: #ff4d4d;
 }
 
-/* Підвал кошика з сумою */
+/*підвал кошика з сумою */
 .cart_footer {
     padding: 25px;
     background: rgba(0, 0, 0, 0.3);
@@ -809,13 +805,13 @@ header nav ul li.catalog_link:hover .mega_menu {
 .auth_page {
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Блок буде стояти зверху, а не по центру екрана */
-    margin-top: 80px; /* Відступ від шапки (можеш збільшити, якщо треба нижче) */
+    align-items: flex-start;
+    margin-top: 80px;
     margin-bottom: 80px;
 }
 
 .auth_box {
-    background: rgba(25, 20, 20, 0.6); /* Темно-коричневий напівпрозорий фон з макета */
+    background: rgba(25, 20, 20, 0.6);
     border-radius: 20px;
     padding: 50px 60px;
     width: 400px;
@@ -836,7 +832,7 @@ header nav ul li.catalog_link:hover .mega_menu {
 }
 
 .auth_input {
-    background: rgba(255, 255, 255, 0.4); /* Світло-сірий фон інпутів */
+    background: rgba(255, 255, 255, 0.4);
     border: none;
     padding: 15px 20px;
     border-radius: 12px;
@@ -858,7 +854,7 @@ header nav ul li.catalog_link:hover .mega_menu {
 }
 
 .auth_submit_btn {
-    background: #8b4545; /* Червонясто-коричневий колір з макета */
+    background: #8b4545;
     color: #ffffff;
     font-family: inherit;
     font-weight: bold;
@@ -902,7 +898,7 @@ header nav ul li.catalog_link:hover .mega_menu {
 }
 
 .header_about_btn:hover {
-    color: #b0b0b0; /* Легке затемнення при наведенні */
+    color: #b0b0b0;
 }
 
 /*ADMIN*/
@@ -963,7 +959,8 @@ header nav ul li.catalog_link:hover .mega_menu {
     font-weight: bold;
 }
 
-/* Робоча зона */
+/*робоча зона */
+
 .admin_content {
     flex: 1;
     background: rgba(255, 255, 255, 0.03);
@@ -996,7 +993,7 @@ header nav ul li.catalog_link:hover .mega_menu {
     background: #a05252;
 }
 
-/* Таблиця */
+/*таблиця */
 .admin_table_wrapper {
     overflow-x: auto;
 }
@@ -1019,7 +1016,7 @@ header nav ul li.catalog_link:hover .mega_menu {
 
 .admin_table td:nth-child(5),
 .admin_table td:nth-child(7) {
-    white-space: nowrap; /* Ціна і кнопки тепер теж не будуть ламатися */
+    white-space: nowrap;
 }
 
 .admin_item_img {
@@ -1031,13 +1028,13 @@ header nav ul li.catalog_link:hover .mega_menu {
     padding: 5px;
 }
 
-/* Статуси */
+/*статуси */
 .status_badge {
     padding: 5px 10px;
     border-radius: 20px;
     font-size: 14px;
     font-weight: bold;
-    white-space: nowrap; /* ЗАБОРОНЯЄМО ПЕРЕНОС ТЕКСТУ */
+    white-space: nowrap;
     display: inline-block;
 }
 
@@ -1051,7 +1048,7 @@ header nav ul li.catalog_link:hover .mega_menu {
     color: #F44336;
 }
 
-/* Кнопки дій */
+/*кнопки дій*/
 .admin_actions_cell {
     white-space: nowrap;
     vertical-align: middle;
@@ -1065,7 +1062,6 @@ header nav ul li.catalog_link:hover .mega_menu {
     margin-right: 0;
 }
 
-/* Додаємо вертикальне вирівнювання для всіх комірок таблиці */
 .admin_table td {
     vertical-align: middle; 
 }
@@ -1091,8 +1087,6 @@ header nav ul li.catalog_link:hover .mega_menu {
     opacity: 0.7;
 }
 
-
-
 .modal_overlay {
     position: fixed;
     top: 0;
@@ -1105,8 +1099,6 @@ header nav ul li.catalog_link:hover .mega_menu {
     display: flex;
     justify-content: center;
     align-items: center;
-    
-    /* Сховано за замовчуванням */
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
@@ -1126,10 +1118,8 @@ header nav ul li.catalog_link:hover .mega_menu {
     box-shadow: 0 15px 50px rgba(0,0,0,0.5);
     transform: translateY(-20px);
     transition: transform 0.3s ease;
-    
-    /* ДОБАВЛЯЕМ ЭТИ ДВЕ СТРОКИ: */
-    max-height: 90vh; /* Модалка будет занимать максимум 90% высоты экрана */
-    overflow-y: auto; /* Если контента больше, появится скролл */
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .modal_overlay.active .modal_content {
@@ -1164,7 +1154,6 @@ header nav ul li.catalog_link:hover .mega_menu {
     color: #ff4d4d;
 }
 
-/* Форма всередині модалки */
 .admin_form .form_group {
     display: flex;
     flex-direction: column;
@@ -1183,7 +1172,7 @@ header nav ul li.catalog_link:hover .mega_menu {
 }
 
 .form_row .form_group {
-    flex: 1; /* Поля займають однакову ширину */
+    flex: 1;
 }
 
 /*CHECKOUT*/
@@ -1196,7 +1185,6 @@ header nav ul li.catalog_link:hover .mega_menu {
     align-items: flex-start;
 }
 
-/* Ліва колонка */
 .checkout_left {
     flex: 2;
     display: flex;
@@ -1232,17 +1220,15 @@ header nav ul li.catalog_link:hover .mega_menu {
 .checkout_form .form_row .auth_input {
     flex: 1;
     width: 100%;
-    margin-bottom: 0; /* Убираем лишний отступ, так как он теперь есть у form_row */
+    margin-bottom: 0;
 }
 
-/* Робимо так, щоб інпути, які стоять самі, розтягувались на 100% */
 .checkout_form > input.auth_input {
     width: 100%;
     box-sizing: border-box;
     margin-bottom: 15px;
 }
 
-/* Права колонка (липка, щоб завжди була на екрані при скролі) */
 .checkout_right {
     flex: 1;
     position: sticky;
@@ -1293,7 +1279,6 @@ header nav ul li.catalog_link:hover .mega_menu {
     margin-bottom: 25px;
 }
 
-/* Кастомні радіо-кнопки для вибору доставки/оплати */
 .delivery_options {
     display: flex;
     flex-direction: column;
@@ -1316,10 +1301,9 @@ header nav ul li.catalog_link:hover .mega_menu {
 }
 
 .radio_label input {
-    display: none; /* Ховаємо стандартний кружок браузера */
+    display: none;
 }
 
-/* Малюємо свій кружок */
 .radio_custom {
     width: 20px;
     height: 20px;
@@ -1329,12 +1313,10 @@ header nav ul li.catalog_link:hover .mega_menu {
     transition: all 0.2s;
 }
 
-/* Стан, коли вибрано */
 .radio_label input:checked + .radio_custom {
     border-color: #8b4545;
 }
 
-/* Крапка всередині вибраного кружка */
 .radio_label input:checked + .radio_custom::after {
     content: '';
     position: absolute;
@@ -1348,6 +1330,7 @@ header nav ul li.catalog_link:hover .mega_menu {
 }
 
 /*404*/
+
 .error_page {
     display: flex;
     flex-direction: column;
@@ -1388,13 +1371,11 @@ header nav ul li.catalog_link:hover .mega_menu {
     padding: 15px 40px;
 }
 
-/* Фикс для текстового поля (описания) */
 textarea.auth_input {
-    resize: none; /* Запрещаем ручное растягивание */
-    overflow-y: auto; /* Скролл для длинного текста внутри поля */
+    resize: none;
+    overflow-y: auto;
 }
 
-/* Красивый темный скроллбар для модалки и текстового поля */
 .modal_content::-webkit-scrollbar,
 textarea.auth_input::-webkit-scrollbar {
     width: 8px;
@@ -1414,10 +1395,10 @@ textarea.auth_input::-webkit-scrollbar-thumb {
 
 .modal_content::-webkit-scrollbar-thumb:hover,
 textarea.auth_input::-webkit-scrollbar-thumb:hover {
-    background: #8b4545; /* Красный цвет PrimeTech при наведении */
+    background: #8b4545;
 }
 
-/* ================= TOAST NOTIFICATIONS ================= */
+/*СПОВІЩЕННЯ*/
 #toast_container {
     position: fixed;
     bottom: 30px;
@@ -1434,7 +1415,7 @@ textarea.auth_input::-webkit-scrollbar-thumb:hover {
     background: rgba(25, 20, 20, 0.95);
     color: #fff;
     border-radius: 10px;
-    border-left: 5px solid #8b4545; /* Червоний для помилок за замовчуванням */
+    border-left: 5px solid #8b4545;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     font-size: 16px;
     font-weight: bold;
@@ -1443,7 +1424,7 @@ textarea.auth_input::-webkit-scrollbar-thumb:hover {
     gap: 10px;
     transform: translateX(120%);
     opacity: 0;
-    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Ефект "відскоку" */
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
 .toast.show {
@@ -1452,36 +1433,31 @@ textarea.auth_input::-webkit-scrollbar-thumb:hover {
 }
 
 .toast.success {
-    border-left-color: #4CAF50; /* Зелений для успіху */
+    border-left-color: #4CAF50; 
 }
 .toast.error {
     border-left-color: #F44336;
 }
 
-/* ================= АДАПТИВНІСТЬ (MOBILE & TABLET) ================= */
+/*адаптивність для мобільних пристроїв*/
 
-/* Для невеликих ноутбуків і планшетів (до 1200px) */
 @media (max-width: 1200px) {
     .productsgrid {
-        grid-template-columns: repeat(2, 1fr); /* Замість 3 товарів у ряд буде 2 */
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
-/* Для планшетів (до 992px) */
 @media (max-width: 992px) {
-    /* Всі сторінки, які були в 2 колонки, тепер стають в 1 стовпчик */
     .catalogpage, .product_main, .checkout_page, .admin_layout, .about {
         flex-direction: column;
     }
     
-    /* Сайдбари та колонки розтягуються на всю ширину */
     .sidebar, .checkout_left, .checkout_right, .admin_sidebar {
         width: 100%;
         max-width: 100%;
         flex: none;
     }
 
-    /* Рятуємо складну галерею на головній сторінці (робимо горизонтальний скролл) */
     .hero {
         display: flex;
         overflow-x: auto;
@@ -1495,10 +1471,7 @@ textarea.auth_input::-webkit-scrollbar-thumb:hover {
     }
 }
 
-/* Для мобільних телефонів (до 768px) */
-/* ================= ПОВНЕ МОБІЛЬНЕ ПОЛІРУВАННЯ (до 768px) ================= */
 @media (max-width: 768px) {
-    /* 1. ШАПКА: компактність */
     header {
         flex-direction: column;
         padding: 15px 0;
@@ -1511,22 +1484,18 @@ textarea.auth_input::-webkit-scrollbar-thumb:hover {
         justify-content: center; 
     }
     header nav ul li a { font-size: 18px; }
-    /* Адаптація кнопки адмінки в шапці */
     .account_link div { padding: 5px 10px !important; gap: 8px !important; }
 
-    /* 2. КАТАЛОГ: сітка та фільтри */
     .catalogpage { gap: 20px; }
     .sidebar { padding: 20px; }
     .search_input { width: 100% !important; font-size: 16px; }
     .productsgrid { 
-        grid-template-columns: 1fr; /* Один товар на ряд */
+        grid-template-columns: 1fr;
         gap: 15px; 
     }
     .product_card { padding: 12px; }
     .product_img { height: 180px; }
     .product_title { font-size: 15px; }
-
-    /* 3. СТОРІНКА ТОВАРУ: шрифти та галерея */
     .product_main { gap: 20px; }
     .product_gallery { padding: 15px; }
     .product_gallery img { max-height: 250px; }
@@ -1540,23 +1509,17 @@ textarea.auth_input::-webkit-scrollbar-thumb:hover {
     .product_price_large { font-size: 28px; }
     .buy_btn_large { width: 100%; font-size: 18px; }
     .product_short_desc { font-size: 15px; text-align: center; }
-
-    /* 4. ОФОРМЛЕННЯ ЗАМОВЛЕННЯ (Checkout) */
     .checkout_page { gap: 30px; }
     .checkout_left h2 { font-size: 24px; text-align: center; }
     .checkout_form .form_row { flex-direction: column; gap: 15px; }
     .summary_box { padding: 20px; }
     .summary_total { font-size: 20px; }
-
-    /* 5. ФОРМИ (Вхід/Реєстрація) та МОДАЛКИ */
     .auth_box, .modal_content { 
         width: 90% !important; 
         padding: 30px 20px !important; 
     }
     .auth_box h2 { font-size: 22px; }
     .auth_input { font-size: 16px; padding: 12px; }
-
-    /* 6. ФУТЕР: складаємо в стовпчик */
     footer .blocks {
         flex-direction: column;
         align-items: center;
@@ -1565,18 +1528,13 @@ textarea.auth_input::-webkit-scrollbar-thumb:hover {
     }
     footer .blocks p { width: 100%; font-size: 16px; }
     .footer-col { align-items: center; }
-
-    /* 7. КОШИК: на весь екран */
     .cart_panel { width: 100% !important; }
     .cart_item h4 { font-size: 13px; padding-right: 40px; }
-
-    /* 8. АДМІНКА: мобільний режим */
     .admin_layout { flex-direction: column; }
     .admin_sidebar { width: 100%; min-height: auto; padding: 15px; }
     .admin_nav { flex-direction: row; flex-wrap: wrap; justify-content: center; }
     .admin_stats_grid { flex-direction: column; }
     .admin_topbar { flex-direction: column; gap: 15px; align-items: stretch; }
-    .admin_table th:nth-child(4), .admin_table td:nth-child(4) { display: none; } /* Ховаємо категорію щоб влізло */
-    /* Ховаємо широке випадаюче меню на телефонах */
+    .admin_table th:nth-child(4), .admin_table td:nth-child(4) { display: none; }
     .mega_menu { display: none !important; }
 }

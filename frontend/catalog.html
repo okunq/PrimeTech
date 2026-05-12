@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PrimeTech:Catalog</title>
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="container">
@@ -19,7 +19,7 @@
                     </li>
                     <li class="cart_link">
                         <a href="#" id="open_cart_btn" style="color: white; display: flex; align-items: center; gap: 10px;">
-                        <!-- Якщо є іконка, додай її сюди: <img src="img/cart.svg" alt="cart"> -->
+                        
                         🛒 Кошик
                         </a>
                     </li>
@@ -120,7 +120,7 @@
         </div>
         
         <div class="cart_items">
-            <!-- Приклад доданого товару -->
+            
             <div class="cart_item">
                 <img src="img/laptop.jpg" alt="Ноутбук">
                 <div class="cart_item_info">
@@ -139,37 +139,37 @@
             <a href="checkout.html" class="checkout_btn">Оформити замовлення</a>
         </div>
     </div>
-    <!-- ================= КІНЕЦЬ КОШИКА ================= -->
+    
 
-    <!-- СКРИПТ ДЛЯ ВІДКРИТТЯ/ЗАКРИТТЯ -->
+    
     <script>
         const openCartBtn = document.getElementById('open_cart_btn');
         const closeCartBtn = document.getElementById('close_cart_btn');
         const cartPanel = document.getElementById('cart_panel');
         const cartOverlay = document.getElementById('cart_overlay');
-        const buyBtns = document.querySelectorAll('.buy_btn_large'); // Кнопка на сторінці товару
+        const buyBtns = document.querySelectorAll('.buy_btn_large'); 
 
-        // Функція відкриття
+        
         function openCart(e) {
             e.preventDefault();
             cartPanel.classList.add('active');
             cartOverlay.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Забороняємо скролити сторінку під кошиком
+            document.body.style.overflow = 'hidden'; 
         }
 
-        // Функція закриття
+        
         function closeCart() {
             cartPanel.classList.remove('active');
             cartOverlay.classList.remove('active');
-            document.body.style.overflow = ''; // Повертаємо скрол
+            document.body.style.overflow = ''; 
         }
 
-        // Вішаємо події на кліки
+        
         if(openCartBtn) openCartBtn.addEventListener('click', openCart);
         if(closeCartBtn) closeCartBtn.addEventListener('click', closeCart);
         if(cartOverlay) cartOverlay.addEventListener('click', closeCart);
         
-        // Відкривати кошик також при натисканні "В кошик" на сторінці товару
+        
         buyBtns.forEach(btn => btn.addEventListener('click', openCart));
     </script>
     <script src="script.js"></script>

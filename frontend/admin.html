@@ -6,17 +6,17 @@
     <title>PrimeTech:Admin</title>
     <link rel="stylesheet" href="style.css">
     <script>
-        // Впиши сюди email, під яким ти зареєструвався!
-        const ADMIN_EMAIL = 'kaptuhandrej@gmail.com'; // Або твій особистий email
+        
+        const ADMIN_EMAIL = 'kaptuhandrej@gmail.com'; 
 
-        // Дістаємо дані поточного користувача з пам'яті
+        
         const currentUser = JSON.parse(localStorage.getItem('user'));
 
         if (!currentUser) {
-            // Якщо людина взагалі не увійшла в акаунт -> викидаємо на сторінку входу
+            
             window.location.href = 'auto.html';
         } else if (currentUser.email !== ADMIN_EMAIL) {
-            // Якщо людина увійшла, але її email не збігається з адмінським -> викидаємо в каталог
+            
             alert('🛑 Доступ заборонено! Ця сторінка тільки для адміністраторів.');
             window.location.href = 'catalog.html';
         }
@@ -25,7 +25,7 @@
 <body>
     <div class="admin_layout container">
         
-        <!-- Бокова панель адміністратора -->
+        
         <aside class="admin_sidebar">
             <a href="index.html" class="logo admin_logo">PrimeTech</a>
             <nav class="admin_nav">
@@ -37,7 +37,7 @@
             <a href="catalog.html" class="admin_exit">Вийти в магазин</a>
         </aside>
 
-        <!-- Головна робоча зона -->
+        
         <main class="admin_content">
             <div class="admin_stats_grid" style="display: flex; gap: 20px; margin-bottom: 30px;">
                 <div class="stat_card" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; flex: 1; border: 1px solid rgba(255,255,255,0.1);">
@@ -187,36 +187,36 @@
         </div>
     </div>
 
-    <!-- СКРИПТ ДЛЯ РОБОТИ МОДАЛКИ -->
+    
     <script>
         const modal = document.getElementById('add_product_modal');
         const openBtn = document.querySelector('.add_product_btn');
         const closeBtn = document.getElementById('close_modal_btn');
 
-        // Відкрити
+        
         openBtn.addEventListener('click', (e) => {
             e.preventDefault();
             modal.classList.add('active');
         });
 
-        // Закрити на хрестик
+        
         closeBtn.addEventListener('click', () => {
             modal.classList.remove('active');
         });
 
-        // Закрити при кліку на темний фон
+        
         modal.addEventListener('click', (e) => {
             if(e.target === modal) {
                 modal.classList.remove('active');
             }
         });
 
-        // Ловим отправку формы
-        // Ловим отправку формы
+        
+        
         const form = document.getElementById('add_product_form');
-        let editingProductId = null; // Змінна, яка пам'ятає, чи ми зараз редагуємо товар
+        let editingProductId = null; 
 
-        // Коли натискаємо "+ Додати товар", очищаємо форму і скидаємо ID редагування
+        
         openBtn.addEventListener('click', (e) => {
             e.preventDefault();
             form.reset();
@@ -226,24 +226,24 @@
             modal.classList.add('active');
         });
 
-        // Показуємо назву вибраного файлу
+        
         document.getElementById('new_image_file').addEventListener('change', function(e) {
             const display = document.getElementById('file_name_display');
             if (e.target.files.length > 0) {
-                display.textContent = e.target.files[0].name; // Пишемо ім'я файлу
+                display.textContent = e.target.files[0].name; 
             } else {
-                display.textContent = ''; // Очищаємо, якщо скасували вибір
+                display.textContent = ''; 
             }
         });
         
         form.addEventListener('submit', async (e) => {
             e.preventDefault(); 
 
-            // 1. Спочатку розбираємося з картинкою
+            
             let finalImageUrl = document.getElementById('existing_image_url').value;
             const fileInput = document.getElementById('new_image_file');
 
-            // Якщо користувач вибрав новий файл
+            
             if (fileInput.files.length > 0) {
                 const formData = new FormData();
                 formData.append('image', fileInput.files[0]);
@@ -251,15 +251,15 @@
                 try {
                     const uploadRes = await fetch('/api/upload', {
                         method: 'POST',
-                        body: formData // ВАЖЛИВО: для файлів headers не вказуємо, браузер сам підставить потрібний multipart/form-data
+                        body: formData 
                     });
                     const uploadData = await uploadRes.json();
                     
                     if (uploadRes.ok) {
-                        finalImageUrl = uploadData.imageUrl; // Отримуємо новий шлях (напр. img/product-123.jpg)
+                        finalImageUrl = uploadData.imageUrl; 
                     } else {
                         alert('Помилка завантаження картинки');
-                        return; // Зупиняємо збереження товару
+                        return; 
                     }
                 } catch (err) {
                     console.error('Помилка мережі при завантаженні картинки:', err);
@@ -267,20 +267,20 @@
                 }
             }
 
-            // Якщо це новий товар, і картинку не вибрали - ставимо заглушку
+            
             if (!finalImageUrl) finalImageUrl = 'img/laptop.jpg';
 
-            // 2. Збираємо всі дані товару
+            
             const productData = {
                 name: document.getElementById('new_name').value,
                 category_id: document.getElementById('new_category').value,
                 price: document.getElementById('new_price').value,
-                image_url: finalImageUrl, // Підставляємо правильну картинку
+                image_url: finalImageUrl, 
                 status: document.getElementById('new_status').value,
                 description: document.getElementById('new_description').value
             };
 
-            // 3. Відправляємо товар у базу
+            
             try {
                 let response;
                 if (editingProductId) {
@@ -301,7 +301,7 @@
                     form.reset(); 
                     document.getElementById('existing_image_url').value = '';
                     modal.classList.remove('active'); 
-                    fetchAdminProducts(); // Оновлюємо таблицю
+                    fetchAdminProducts(); 
                 } else {
                     alert('Помилка при збереженні товара');
                 }
@@ -318,7 +318,7 @@
             document.getElementById('new_price').value = price;
             
             
-            // Скидаємо інпут файлу, але запам'ятовуємо стару картинку
+            
             document.getElementById('new_image_file').value = '';
             document.getElementById('existing_image_url').value = imageUrl;
             document.getElementById('file_name_display').textContent = '';
@@ -331,7 +331,7 @@
 
             modal.classList.add('active');
         }
-        // Функция загрузки товаров для админки
+        
         async function fetchAdminProducts() {
             try {
                 const response = await fetch('/api/products');
@@ -350,8 +350,8 @@
                     };
                     let categoryName = categoryMap[product.category_id] || 'Інше';
 
-                    // Важливо: ми безпечно передаємо назву товару (замінюючи одинарні лапки, якщо вони там є)
-                    // Важливо: безпечно обробляємо назву та опис (замінюємо лапки та переноси рядків)
+                    
+                    
                     const safeName = product.name.replace(/'/g, "\\'").replace(/"/g, "&quot;");
                     const safeDesc = (product.description || '')
                         .replace(/'/g, "\\'")
@@ -380,10 +380,10 @@
             }
         }
 
-        // Запускаем при открытии страницы
+        
         fetchAdminProducts();
 
-        // Функция удаления товара
+        
         async function deleteProduct(id) {
             if (!confirm('Ви впевнені, що хочете видалити цей товар?')) return;
             try {
@@ -392,14 +392,14 @@
                 });
 
                 if (response.ok) {
-                    fetchAdminProducts(); // Обновляем таблицу после удаления
+                    fetchAdminProducts(); 
                 }
             } catch (error) {
                 console.error('Помилка:', error);
             }
         }
 
-        // ================= ВКЛАДКИ (ТОВАРИ / ЗАМОВЛЕННЯ) =================
+        
         const linkProducts = document.getElementById('link_products');
         const linkOrders = document.getElementById('link_orders');
         const tabProducts = document.getElementById('products_tab_content');
@@ -410,15 +410,15 @@
         const tabUsers = document.getElementById('users_tab_content');
         const adminUsersTable = document.getElementById('admin_users_table');
 
-        // Клік на вкладку "Товари"
-        // Клік на вкладку "Товари"
+        
+        
         linkProducts.addEventListener('click', (e) => {
             e.preventDefault();
-            // Знімаємо активність з усіх, даємо тільки Товарам
+            
             [linkProducts, linkOrders, linkUsers].forEach(l => l.classList.remove('active_admin_link'));
             linkProducts.classList.add('active_admin_link');
             
-            // Показуємо товари, ХОВАЄМО ВСЕ ІНШЕ
+            
             tabProducts.style.display = 'block';
             tabOrders.style.display = 'none';
             tabUsers.style.display = 'none'; 
@@ -427,13 +427,13 @@
             pageTitle.textContent = 'Управління товарами';
         });
 
-        // Клік на вкладку "Замовлення"
+        
         linkOrders.addEventListener('click', (e) => {
             e.preventDefault();
             [linkProducts, linkOrders, linkUsers].forEach(l => l.classList.remove('active_admin_link'));
             linkOrders.classList.add('active_admin_link');
             
-            // Показуємо замовлення, ХОВАЄМО ВСЕ ІНШЕ
+            
             tabOrders.style.display = 'block';
             tabProducts.style.display = 'none';
             tabUsers.style.display = 'none'; 
@@ -443,7 +443,7 @@
             fetchAdminOrders(); 
         });
 
-        // ================= ЛОГІКА ЗАМОВЛЕНЬ =================
+        
         async function fetchAdminOrders() {
             try {
                 const response = await fetch('/api/orders');
@@ -452,11 +452,11 @@
                 const tableBody = document.getElementById('admin_orders_table');
                 tableBody.innerHTML = ''; 
 
-                // Масив можливих статусів
+                
                 const statuses = ['Новий', 'В обробці', 'Відправлено', 'Виконано', 'Скасовано'];
 
                 orders.forEach(order => {
-                    // Генеруємо випадаючий список для кожного замовлення
+                    
                     let statusOptions = statuses.map(s => 
                         `<option value="${s}" ${order.status === s ? 'selected' : ''}>${s}</option>`
                     ).join('');
@@ -494,7 +494,7 @@
             }
         }
 
-        // Нова функція для відправки статусу на сервер
+        
         async function changeOrderStatus(orderId, newStatus) {
             try {
                 const response = await fetch(`/api/orders/${orderId}/status`, {
@@ -505,20 +505,20 @@
                 
                 if (!response.ok) {
                     alert('Помилка при оновленні статусу!');
-                    fetchAdminOrders(); // Повертаємо старий статус, якщо помилка
+                    fetchAdminOrders(); 
                 }
             } catch (error) {
                 console.error('Помилка:', error);
             }
         }
 
-        // Видалення замовлення
+        
         async function deleteOrder(id) {
             if (!confirm('Ви впевнені, що хочете видалити це замовлення?')) return;
             try {
                 const response = await fetch(`/api/orders/${id}`, { method: 'DELETE' });
                 if (response.ok) {
-                    fetchAdminOrders(); // Оновлюємо таблицю
+                    fetchAdminOrders(); 
                 }
             } catch (error) {
                 console.error('Помилка:', error);
@@ -527,19 +527,19 @@
 
         linkUsers.addEventListener('click', (e) => {
         e.preventDefault();
-        // Активуємо посилання
+        
         [linkProducts, linkOrders, linkUsers].forEach(l => l.classList.remove('active_admin_link'));
         linkUsers.classList.add('active_admin_link');
         
-        // Показуємо потрібний контент
+        
         tabProducts.style.display = 'none';
         tabOrders.style.display = 'none';
         tabUsers.style.display = 'block';
         
-        mainAddBtn.style.display = 'none'; // Ховаємо кнопку "Додати товар"
+        mainAddBtn.style.display = 'none'; 
         pageTitle.textContent = 'Управління користувачами';
         
-        fetchAdminUsers(); // Завантажуємо дані
+        fetchAdminUsers(); 
     });
 
     async function fetchAdminUsers() {
@@ -591,7 +591,7 @@
         } catch (err) { console.error(err); }
     }
 
-    // Вызывай её при загрузке страницы
+    
     fetchDashboardStats();
     </script>
 </body>

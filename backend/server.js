@@ -10,7 +10,7 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 
-// 1. Вказуємо правильний шлях до папки frontend (виходимо з backend на рівень вище і заходимо в frontend)
+//шлях до папки frontend
 const publicPath = path.join(__dirname, '../frontend');
 
 console.log("========================================");
@@ -18,10 +18,10 @@ console.log("📂 Сервер шукає файли у цій папці:");
 console.log(publicPath);
 console.log("========================================");
 
-// 2. Роздаємо всі статичні файли (HTML, CSS, JS, і картинки) з папки frontend
+//роздаємо всі статичні файли з папки frontend
 app.use(express.static(publicPath));
 
-// 3. Налаштування multer: зберігаємо нові фото прямо в frontend/img
+//налаштування multer
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, path.join(__dirname, '../frontend/img/')); 
@@ -33,7 +33,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// Маршрут для прийому файлу
+//маршрут для прийому файлу
 app.post('/api/upload', upload.single('image'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ error: "Файл не завантажено" });
@@ -51,42 +51,39 @@ const pool = new Pool({
     database: 'primetech_db'  
 });
 
-// Оновлений маршрут для замовлення + товарів
+//оновлений маршрут для замовлення та товарів
 app.post('/api/orders', async (req, res) => {
-    const client = await pool.connect(); // Беремо окреме з'єднання для транзакції
+    const client = await pool.connect(); 
     try {
         const { delivery_method, payment_method, delivery_address, total_price, items } = req.body;
 
-        await client.query('BEGIN'); // Починаємо транзакцію
+        await client.query('BEGIN'); 
 
-        // 1. Записуємо саме замовлення
         const orderResult = await client.query(
             'INSERT INTO orders (delivery_method, payment_method, delivery_address, total_price) VALUES ($1, $2, $3, $4) RETURNING id',
             [delivery_method, payment_method, delivery_address, total_price]
         );
         const orderId = orderResult.rows[0].id;
 
-        // 2. Циклом записуємо кожен товар з кошика в таблицю order_items
         const itemQuery = 'INSERT INTO order_items (order_id, product_id, quantity, price_at_purchase) VALUES ($1, $2, $3, $4)';
         
         for (const item of items) {
             let qty = item.quantity || 1;
-            // Записуємо ID замовлення, ID товару, кількість (поки 1) та ціну на момент покупки
             await client.query(itemQuery, [orderId, item.id, 1, item.price]);
         }
 
-        await client.query('COMMIT'); // Підтверджуємо всі зміни
+        await client.query('COMMIT');
         res.status(201).json({ message: "Замовлення успішно збережено!", orderId });
     } catch (error) {
-        await client.query('ROLLBACK'); // Якщо щось пішло не так — скасовуємо все
+        await client.query('ROLLBACK');
         console.error("Помилка при збереженні замовлення:", error);
         res.status(500).json({ error: "Помилка сервера" });
     } finally {
-        client.release(); // Повертаємо з'єднання в пул
+        client.release();
     }
 });
 
-// 1. Отримати всі товари (з пагінацією та фільтрами)
+//отримати всі товари
 app.get('/api/products', async (req, res) => {
     try {
         const { category, search, minPrice, maxPrice, page = 1 } = req.query;
@@ -113,7 +110,7 @@ app.get('/api/products', async (req, res) => {
     }
 });
 
-// 2. Отримати ОДИН товар за його ID (ЦЕЙ МАРШРУТ БУВ ЗАГУБЛЕНИЙ)
+//отримати один товар за його ID
 app.get('/api/products/:id', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM products WHERE id = $1', [req.params.id]);
@@ -135,20 +132,20 @@ app.post('/api/products', async (req, res) => {
         );
         res.status(201).json(result.rows[0]);
     } catch (error) {
-        console.error("Ошибка при добавлении товара:", error);
-        res.status(500).json({ error: "Ошибка сервера при сохранении" });
+        console.error("Помилка при додаванні товару:", error);
+        res.status(500).json({ error: "Помилка сервера при збереженні" });
     }
 });
 
-// Маршрут для УДАЛЕНИЯ товара (остается без изменений)
+//маршрут для видалення товару за ID
 app.delete('/api/products/:id', async (req, res) => {
     try {
         const id = req.params.id;
         await pool.query('DELETE FROM products WHERE id = $1', [id]);
-        res.json({ message: "Товар удален" });
+        res.json({ message: "Товар видалено" });
     } catch (error) {
-        console.error("Ошибка при удалении:", error);
-        res.status(500).json({ error: "Ошибка сервера" });
+        console.error("Помилка при видаленні:", error);
+        res.status(500).json({ error: "Помилка сервера" });
     }
 });
 
@@ -169,24 +166,21 @@ app.put('/api/products/:id', async (req, res) => {
     }
 });
 
-// ================= АВТОРИЗАЦИЯ И РЕГИСТРАЦИЯ =================
+//авторизація та реєстрація користувачів
 
-// 1. РЕГИСТРАЦИЯ НОВОГО ПОЛЬЗОВАТЕЛЯ
+//реєстрація нового користувача
 app.post('/api/register', async (req, res) => {
     try {
         const { name, phone, email, password } = req.body;
 
-        // Проверяем, нет ли уже такого email в базе
         const userExists = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
         if (userExists.rows.length > 0) {
             return res.status(400).json({ error: "Користувач з таким email вже існує!" });
         }
 
-        // Шифруем пароль (создаем хэш)
+        //шифрування паролю
         const salt = await bcrypt.genSalt(10);
         const passwordHash = await bcrypt.hash(password, salt);
-
-        // Сохраняем пользователя в базу (пароль зашифрован!)
         const newUser = await pool.query(
             'INSERT INTO users (name, phone, email, password_hash) VALUES ($1, $2, $3, $4) RETURNING id, name, email',
             [name, phone, email, passwordHash]
@@ -194,43 +188,36 @@ app.post('/api/register', async (req, res) => {
 
         res.status(201).json({ message: "Реєстрація успішна!", user: newUser.rows[0] });
     } catch (error) {
-        console.error("Ошибка регистрации:", error);
+        console.error("Помилка реєстрації:", error);
         res.status(500).json({ error: "Помилка сервера" });
     }
 });
 
-// 2. ВХОД (ЛОГИН)
+//вхід користувача
 app.post('/api/login', async (req, res) => {
     try {
         const { email, password } = req.body;
-
-        // Ищем пользователя по email
         const userResult = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
         if (userResult.rows.length === 0) {
             return res.status(400).json({ error: "Користувача з таким email не знайдено" });
         }
 
         const user = userResult.rows[0];
-
-        // Сравниваем введенный пароль с зашифрованным хэшем из базы
         const validPassword = await bcrypt.compare(password, user.password_hash);
         if (!validPassword) {
             return res.status(400).json({ error: "Невірний пароль" });
         }
 
-        // Если всё ок, отвечаем успехом (в реальных проектах тут еще выдают токены, но для диплома достаточно этого)
         res.json({ message: "Вхід виконано!", user: { id: user.id, name: user.name, email: user.email } });
     } catch (error) {
-        console.error("Ошибка входа:", error);
+        console.error("Помилка входа:", error);
         res.status(500).json({ error: "Помилка сервера" });
     }
 });
 
-// ================= УПРАВЛЕНИЕ ЗАКАЗАМИ (АДМИНКА) =================
+//Упраіння замовленнями та користувачами (для адміна)
 
-// Отримати всі замовлення разом із списком товарів (SQL JOIN + string_agg)
-// Експорт замовлень у CSV (Excel)
-// Отримати всі замовлення для таблиці в адмінці
+//отримати всі замовлення з товарами
 app.get('/api/orders', async (req, res) => {
     try {
         const query = `
@@ -260,14 +247,12 @@ app.get('/api/admin/export-orders', async (req, res) => {
             GROUP BY o.id ORDER BY o.id DESC
         `;
         const result = await pool.query(query);
-
-        // \uFEFF - це BOM (Byte Order Mark), потрібен щоб Excel правильно читав українські літери (UTF-8)
         let csvContent = '\uFEFF';
         csvContent += "ID;Товари;Адреса доставки;Спосіб оплати;Сума (UAH);Статус\n";
 
         result.rows.forEach(row => {
             const id = row.id;
-            // Екрануємо лапки та замінюємо переноси рядків, щоб таблиця не ламалася
+            //екрануємо лапки та замінюємо переноси рядків, щоб таблиця не ламалася
             const items = `"${(row.items_list || '').replace(/"/g, '""')}"`;
             const address = `"${(row.delivery_address || '').replace(/"/g, '""')}"`;
             const payment = `"${(row.payment_method || '').replace(/"/g, '""')}"`;
@@ -277,7 +262,6 @@ app.get('/api/admin/export-orders', async (req, res) => {
             csvContent += `${id};${items};${address};${payment};${total};${status}\n`;
         });
 
-        // Кажемо браузеру, що це файл для скачування
         res.setHeader('Content-Type', 'text/csv; charset=utf-8');
         res.setHeader('Content-Disposition', 'attachment; filename="orders_report.csv"');
         res.send(csvContent);
@@ -287,7 +271,7 @@ app.get('/api/admin/export-orders', async (req, res) => {
     }
 });
 
-// Оновити статус замовлення
+//оновити статус замовлення
 app.put('/api/orders/:id/status', async (req, res) => {
     try {
         const { status } = req.body;
@@ -299,25 +283,23 @@ app.put('/api/orders/:id/status', async (req, res) => {
     }
 });
 
-// Удалить заказ
+// Видалити замовлення
 app.delete('/api/orders/:id', async (req, res) => {
     try {
         const orderId = req.params.id;
-        // Важно: сначала удаляем товары этого заказа из order_items, иначе база выдаст ошибку связей
         await pool.query('DELETE FROM order_items WHERE order_id = $1', [orderId]);
-        // Затем удаляем сам заказ
         await pool.query('DELETE FROM orders WHERE id = $1', [orderId]);
         
-        res.json({ message: "Заказ успешно удален" });
+        res.json({ message: "Замовлення успішно видалено" });
     } catch (error) {
-        console.error("Ошибка при удалении заказа:", error);
-        res.status(500).json({ error: "Ошибка сервера" });
+        console.error("Помилка при видаленні замовлення:", error);
+        res.status(500).json({ error: "Помилка сервера" });
     }
 });
 
 
 
-// Отримати всіх користувачів (для адмінки)
+//отримати всіх користувачів для адміна
 app.get('/api/users', async (req, res) => {
     try {
         const result = await pool.query('SELECT id, name, phone, email, created_at FROM users ORDER BY id DESC');
@@ -328,7 +310,7 @@ app.get('/api/users', async (req, res) => {
     }
 });
 
-// Видалити користувача
+//видалити користувача
 app.delete('/api/users/:id', async (req, res) => {
     try {
         const id = req.params.id;
@@ -350,11 +332,11 @@ app.get('/api/admin/stats', async (req, res) => {
             totalUsers: usersCount.rows[0].count
         });
     } catch (error) {
-        res.status(500).json({ error: "Ошибка сервера" });
+        res.status(500).json({ error: "Помилка сервера" });
     }
 });
 
-// Додати відгук
+//додати відгук
 app.post('/api/reviews', async (req, res) => {
     try {
         const { product_id, user_id, rating, comment } = req.body;
@@ -364,11 +346,11 @@ app.post('/api/reviews', async (req, res) => {
         );
         res.status(201).json(result.rows[0]);
     } catch (error) {
-        res.status(500).json({ error: "Ошибка сервера" });
+        res.status(500).json({ error: "Помилка сервера" });
     }
 });
 
-// Отримати відгуки для конкретного товару
+//отримати відгуки для конкретного товару
 app.get('/api/reviews/:productId', async (req, res) => {
     try {
         const result = await pool.query(
@@ -377,17 +359,16 @@ app.get('/api/reviews/:productId', async (req, res) => {
         );
         res.json(result.rows);
     } catch (error) {
-        res.status(500).json({ error: "Ошибка сервера" });
+        res.status(500).json({ error: "Помилка сервера" });
     }
 });
 
-// Обробка невідомих маршрутів (404 для API)
-// Помилка 404 тільки для API-запитів
+//маршрут для неіснуючих API
 app.use('/api', (req, res) => {
     res.status(404).json({ error: "API маршрут не знайдено" });
 });
 
-// Помилка 404 для браузера (якщо не знайшло HTML файл)
+//помилка 404 для браузера
 app.use((req, res) => {
     res.status(404).send(`
         <h2 style="color: red; text-align: center; margin-top: 50px;">Помилка 404: Файл не знайдено</h2>

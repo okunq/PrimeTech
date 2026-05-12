@@ -11,7 +11,7 @@
         <a href="index.html" class="logo">PrimeTech</a>
         <nav>
             <ul>
-                <!-- Кнопка повернення -->
+                
                 <li><a href="catalog.html" class="header_about_btn">Повернутися до покупок</a></li>
             </ul>
         </nav>
@@ -110,15 +110,15 @@
         document.addEventListener('DOMContentLoaded', () => {
             const user = JSON.parse(localStorage.getItem('user'));
             if (user) {
-                // Если пользователь залогинен — подставляем имя и телефон из базы
+                
                 document.getElementById('c_name').value = user.name;
-                // Мы не сохраняли телефон в localStorage при входе, 
-                // но если нужно, можно обновить маршрут логина на сервере, чтобы он его отдавал
+                
+                
             }
-            // ... твой код отрисовки чека ...
+            
         });
 
-        // 1. При завантаженні сторінки відмальовуємо чек
+        
         document.addEventListener('DOMContentLoaded', () => {
             const cart = JSON.parse(localStorage.getItem('cart')) || [];
             const summaryItems = document.querySelector('.summary_items');
@@ -142,18 +142,18 @@
             summaryTotal.textContent = totalSum.toFixed(2) + ' ₴';
         });
 
-        // Генерація списку відділень та поштоматів для випадаючого списку
+        
         document.addEventListener('DOMContentLoaded', () => {
             const officesList = document.getElementById('offices_list');
             if (officesList) {
                 let optionsHTML = '';
                 
-                // Генеруємо 500 звичайних відділень
+                
                 for (let i = 1; i <= 500; i++) {
                     optionsHTML += `<option value="Відділення №${i}"></option>`;
                 }
                 
-                // Генеруємо 100 поштоматів (5-значні номери, наприклад 10001, 10002...)
+                
                 for (let i = 10001; i <= 10100; i++) {
                     optionsHTML += `<option value="Поштомат №${i}"></option>`;
                 }
@@ -162,7 +162,7 @@
             }
         });
 
-        // 2. Відправка замовлення
+        
         document.getElementById('submit_order_btn').addEventListener('click', async (e) => {
             e.preventDefault();
 
@@ -193,7 +193,7 @@
                 delivery_method: delivery,
                 payment_method: payment,
                 delivery_address: fullAddress,
-                total_price: finalTotal, // ПЕРЕДАЄМО РЕАЛЬНУ СУМУ З МАТЕМАТИКИ
+                total_price: finalTotal, 
                 items: cart
             };
 
@@ -205,7 +205,7 @@
                 });
 
                 if (response.ok) {
-                    // ОЧИЩАЄМО КОШИК ПІСЛЯ ПОКУПКИ
+                    
                     localStorage.removeItem('cart'); 
                     
                     document.querySelector('.checkout_page').innerHTML = `

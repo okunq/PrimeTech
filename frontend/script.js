@@ -1,59 +1,61 @@
-// Глобальная переменная для памяти: в какой категории мы сейчас находимся
-let currentCategoryId = null;
+
+let currentCategoryId = null; // поточна обрана категорія для фільтрації
 
 document.addEventListener('DOMContentLoaded', () => {
-    fetchProducts(); // Завантажуємо всі товари при відкритті
-    updateCartUI(); // Оновлюємо кошик
-    checkAuth(); // Перевіряємо аватарку
-    setupCategoryFilters(); // Вмикаємо плавні фільтри сайдбару
-    setupSearch(); // Вмикаємо живий пошук
+    // стартова ініціалізація при завантаженні сторінки
+    fetchProducts(); 
+    updateCartUI(); 
+    checkAuth(); 
+    setupCategoryFilters(); 
+    setupSearch(); 
 });
 
-// ================= ЖИВИЙ ПОШУК І ФІЛЬТР ЦІН =================
+
 function setupSearch() {
     const searchInput = document.querySelector('.search_input');
     const applyPriceBtn = document.getElementById('apply_price_btn');
-    const resetPriceBtn = document.getElementById('reset_price_btn'); // Знаходимо нову кнопку
+    const resetPriceBtn = document.getElementById('reset_price_btn'); 
 
-    // Пошук при введенні тексту
+    // підключаємо елементи пошуку та фільтрів
     if (searchInput) {
         searchInput.addEventListener('input', () => {
             fetchProducts(currentCategoryId);
         });
     }
 
-    // Пошук при натисканні "Застосувати" ціну
+    
     if (applyPriceBtn) {
         applyPriceBtn.addEventListener('click', () => {
             fetchProducts(currentCategoryId);
         });
     }
 
-    // ЛОГІКА СКИДАННЯ ФІЛЬТРІВ
+    
     if (resetPriceBtn) {
         resetPriceBtn.addEventListener('click', () => {
-            // 1. Очищаємо всі поля
+            
             document.getElementById('price_min').value = '';
             document.getElementById('price_max').value = '';
             if (searchInput) searchInput.value = '';
             
-            // 2. Завантажуємо товари заново (без фільтрів)
+            
             fetchProducts(currentCategoryId);
         });
     }
 }
 
-// ================= ФІЛЬТРАЦІЯ БЕЗ ПЕРЕЗАВАНТАЖЕННЯ =================
+
 function setupCategoryFilters() {
     const links = document.querySelectorAll('#sidebar_categories a');
     
+    // налаштовуємо фільтрацію по категоріях
     links.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault(); 
             
             currentCategoryId = e.target.getAttribute('data-category');
             
-            // Очищаємо поле пошуку при зміні категорії
+            
             const searchInput = document.querySelector('.search_input');
             if(searchInput) searchInput.value = '';
 
@@ -62,20 +64,21 @@ function setupCategoryFilters() {
     });
 }
 
-// ================= ЗАГРУЗКА ТОВАРОВ С УЧЕТОМ ВСЕХ ФИЛЬТРОВ =================
-// ================= ЗАГРУЗКА ТОВАРОВ С УЧЕТОМ ВСЕХ ФИЛЬТРОВ =================
+
+
 let currentPage = 1;
 
 async function fetchProducts(categoryId = null, page = 1) {
     currentPage = page;
     try {
         const productsGrid = document.getElementById('products_grid');
-        if (!productsGrid) return; // Виходимо, якщо ми не на сторінці каталогу
+        if (!productsGrid) return; 
 
-        // 1. Формуємо базове посилання
+        
+        // формуємо URL запиту до API з параметрами фільтрів
         let url = new URL('/api/products', window.location.origin);
         
-        // 2. Збираємо всі фільтри (категорія, пошук, ціни)
+        
         if (categoryId) url.searchParams.append('category', categoryId);
         
         const searchInput = document.querySelector('.search_input');
@@ -86,23 +89,23 @@ async function fetchProducts(categoryId = null, page = 1) {
         if (priceMin && priceMin.value) url.searchParams.append('minPrice', priceMin.value);
         if (priceMax && priceMax.value) url.searchParams.append('maxPrice', priceMax.value);
 
-        // 3. Додаємо пагінацію (на якій ми зараз сторінці)
+        
         url.searchParams.append('page', page);
 
-        // 4. Робимо запит на сервер
+        
         const response = await fetch(url);
         const products = await response.json();
         
-        // 5. Очищаємо сітку перед відмальовуванням
+        
         productsGrid.innerHTML = '';
         
-        // 6. Відмальовуємо картки товарів
+        
         if (products.length === 0) {
             productsGrid.innerHTML = '<h2 style="color: white; grid-column: 1/-1; text-align: center; margin-top: 50px;">Товарів не знайдено</h2>';
         } else {
             products.forEach(product => {
                 let statusClass = product.status === 'В наявності' ? 'color: #4CAF50;' : 'color: #F44336;';
-                // Безпечна назва для передачі в функцію кошика
+                
                 const safeName = product.name.replace(/'/g, "\\'").replace(/"/g, "&quot;");
                 
                 const card = `
@@ -124,10 +127,10 @@ async function fetchProducts(categoryId = null, page = 1) {
             });
         }
 
-        // 7. Відмальовуємо кнопки пагінації (1, 2, 3...) в самому низу
+        
         if (products.length > 0) {
             const totalCount = products[0].total_count;
-            const totalPages = Math.ceil(totalCount / 12); // 12 товарів на сторінку
+            const totalPages = Math.ceil(totalCount / 12); 
 
             const pagination = document.createElement('div');
             pagination.style.cssText = "display: flex; justify-content: center; gap: 10px; margin-top: 40px; padding-bottom: 50px; grid-column: 1 / -1;";
@@ -146,7 +149,7 @@ async function fetchProducts(categoryId = null, page = 1) {
                 }
                 
                 btn.onclick = () => {
-                    window.scrollTo({ top: 0, behavior: 'smooth' }); // Плавний скрол нагору
+                    window.scrollTo({ top: 0, behavior: 'smooth' }); 
                     fetchProducts(categoryId, i);
                 };
                 pagination.appendChild(btn);
@@ -158,8 +161,9 @@ async function fetchProducts(categoryId = null, page = 1) {
     }
 }
 
-// ОНОВЛЕНА ФУНКЦІЯ ДОДАВАННЯ В КОШИК
+
 function addToCart(id, name, price, image) {
+    // додаємо товар до кошика або збільшуємо кількість, якщо він вже є
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     let existingItem = cart.find(item => item.id === id);
     
@@ -172,16 +176,16 @@ function addToCart(id, name, price, image) {
     localStorage.setItem('cart', JSON.stringify(cart));
     updateCartUI();
     
-    // ВИКЛИКАЄМО КРАСИВЕ ПОВІДОМЛЕННЯ ЗАМІСТЬ ВІДКРИТТЯ ПАНЕЛІ
+    
     showToast('✅ Товар додано в кошик', 'success');
 }
 
-// Зміна кількості (+ або -)
+
 function changeQuantity(index, delta) {
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     if (cart[index]) {
         cart[index].quantity += delta;
-        // Якщо кількість падає до 0 або нижче — видаляємо товар
+        
         if (cart[index].quantity <= 0) {
             cart.splice(index, 1);
         }
@@ -190,7 +194,7 @@ function changeQuantity(index, delta) {
     }
 }
 
-// Видалення товару повністю
+
 function removeFromCart(index) {
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     cart.splice(index, 1);
@@ -208,7 +212,7 @@ function updateCartUI() {
     let totalSum = 0;
 
     cart.forEach((item, index) => {
-        // Якщо в старих збереженнях немає кількості, вважаємо що вона 1
+        
         let qty = item.quantity || 1; 
         let itemTotal = parseFloat(item.price) * qty;
         totalSum += itemTotal;
@@ -239,16 +243,16 @@ function checkAuth() {
     const accountLink = document.querySelector('.account_link a');
 
     if (user && accountLink) {
-        // 1. Указываем твой email администратора
+        
         const ADMIN_EMAIL = 'kaptuhandrej@gmail.com'; 
         
-        // Генерируем аватарку
+        
         const avatarUrl = `https://ui-avatars.com/api/?name=${user.name}&background=random&color=fff&rounded=true&size=40`;
 
-        // 2. Проверяем, является ли текущий пользователь админом
+        
         let adminBtn = '';
         if (user.email === ADMIN_EMAIL) {
-            // Если да — создаем код кнопки
+            
             adminBtn = `
                 <a href="admin.html" style="
                     color: #FFD700; 
@@ -265,7 +269,7 @@ function checkAuth() {
                 </a>`;
         }
 
-        // 3. Собираем всё вместе в шапке
+        
         accountLink.parentElement.innerHTML = `
             <div style="display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 30px;">
                 ${adminBtn}
@@ -275,7 +279,7 @@ function checkAuth() {
             </div>
         `;
 
-        // Логика выхода остается прежней
+        
         document.getElementById('logout_btn').addEventListener('click', (e) => {
             e.preventDefault();
             localStorage.removeItem('user'); 
@@ -284,8 +288,9 @@ function checkAuth() {
     }
 }
 
-// ================= TOAST NOTIFICATIONS =================
+
 function showToast(message, type = 'success') {
+    // створюємо або знаходимо контейнер для сповіщень
     let container = document.getElementById('toast_container');
     if (!container) {
         container = document.createElement('div');
@@ -299,12 +304,12 @@ function showToast(message, type = 'success') {
 
     container.appendChild(toast);
 
-    // Анімація появи
+    
     setTimeout(() => toast.classList.add('show'), 10);
 
-    // Видалення через 3 секунди
+    
     setTimeout(() => {
         toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 400); // чекаємо кінець анімації
+        setTimeout(() => toast.remove(), 400); 
     }, 3000);
 }

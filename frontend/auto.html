@@ -38,12 +38,12 @@
         </div>
     </div>
     <script>
-    // 1. ОДРАЗУ ПЕРЕВІРЯЄМО: ЯКЩО ВЖЕ УВІЙШОВ -> ВИКИДАЄМО В КАТАЛОГ
+    
         if (localStorage.getItem('user')) {
             window.location.href = 'catalog.html';
         }
 
-        // 2. СТАВИМО "ВХІД" ЗА ЗАМОВЧУВАННЯМ
+        
         let isLoginMode = true; 
 
         const authTitle = document.getElementById('auth_title');
@@ -53,7 +53,7 @@
         const switchModeBtn = document.getElementById('switch_mode_btn');
         const authForm = document.getElementById('auth_form');
 
-        // 3. НАЛАШТОВУЄМО ВІЗУАЛ ПРИ ЗАВАНТАЖЕННІ (Ховаємо зайве)
+        
         document.addEventListener('DOMContentLoaded', () => {
             authTitle.textContent = 'Вхід';
             registerFields.style.display = 'none';
@@ -62,20 +62,20 @@
             switchModeBtn.textContent = 'Зареєструватися';
         });
 
-        // 4. Анімація перемикання між Входом і Реєстрацією
+        
         switchModeBtn.addEventListener('click', (e) => {
             e.preventDefault();
             isLoginMode = !isLoginMode;
 
             if (isLoginMode) {
-                // Режим ВХОДУ
+                
                 authTitle.textContent = 'Вхід';
                 registerFields.style.display = 'none';
                 authSubmitBtn.textContent = 'Увійти';
                 switchText.textContent = 'Немає акаунту?';
                 switchModeBtn.textContent = 'Зареєструватися';
             } else {
-                // Режим РЕЄСТРАЦІЇ
+                
                 authTitle.textContent = 'Реєстрація';
                 registerFields.style.display = 'flex';
                 authSubmitBtn.textContent = 'Зареєструватися';
@@ -84,7 +84,7 @@
             }
         });
 
-        // 5. Відправка даних на сервер
+        
         authForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -92,7 +92,7 @@
             const password = document.getElementById('auth_password').value;
 
             if (isLoginMode) {
-                // =============== ЛОГІКА ВХОДУ ===============
+                
                 try {
                     const response = await fetch('/api/login', {
                         method: 'POST',
@@ -111,7 +111,7 @@
                     console.error(error);
                 }
             } else {
-                // =============== ЛОГІКА РЕЄСТРАЦІЇ ===============
+                
                 const name = document.getElementById('reg_name').value;
                 const phone = document.getElementById('reg_phone').value;
 
