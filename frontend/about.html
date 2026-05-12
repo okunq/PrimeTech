@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrimeTech:About Us</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="container">
+        <a href="index.html" class="logo">PrimeTech</a>
+        <nav>
+               <ul>
+                <li class="catalog_link">
+                    <a href="catalog.html">
+                         <img src="img/gr4.svg" alt="gr4">
+                            Каталог
+                     </a>
+                 </li>
+                <li class="account_link">
+                     <a href="auto.html">
+                        <img src="img/account.svg" alt="account">
+                     </a>
+                 </li>
+             </ul>
+        </nav>
+    </header>
+        <div class="about container">
+            <div class="abouttext">
+                <h1>Вітаємо в PrimeTech - вашому провіднику у світ інновацій!</h1>
+                <p>
+                PrimeTech - це не просто ще один інтернет-магазин електроніки. 
+                Це простір для тих, хто живе технологіями, цінує комфорт та прагне 
+                отримувати від своїх девайсів максимум. 
+                Наша мета - зробити преміальні гаджети та передові інновації доступними 
+                для кожного.
+                </p>
+                <p>
+                Майбутнє вже тут, і воно чекає на вас. 
+                Оновлюйте свій технологічний арсенал разом із PrimeTech!
+                </p>
+            </div>
+            <div class="aboutslide">
+                <img src="img/about1.svg" alt="PrimeHeadphones" class="active">
+                <img src="img/about2.svg" alt="PrimeWatches">
+                <img src="img/about3.svg" alt="PrimeConsole">
+                <img src="img/about4.svg" alt="PrimeLaptop">
+                <img src="img/about5.svg" alt="PrimeCamera">
+            </div>
+        </div>
+    <footer>
+        <div class="blocks container">
+            <div class="footer-col">
+                <h2>Contacts</h2>
+                <div class="footer-info">
+                    <p>+380951234567</p>
+                    <p>primetech@gmail.com.ua</p>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h2>Follow Us</h2>
+                <div class="footer-icons">
+                    <a href="https://www.instagram.com/" target="_blank">
+                        <img src="img/insta.svg" alt="Instagram">
+                    </a>
+                    <a href="https://t.me/+9OQus67JL3VkMjY6" target="_blank">
+                        <img src="img/telegram.svg" alt="Telegram">
+                    </a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h2>Download App</h2>
+                <div class="footer-icons">
+                    <a href="ul_googleplay"><img src="img/googleplay.svg" alt="Google Play"></a>
+                    <a href="ul_appstore"><img src="img/appstore.svg" alt="App Store"></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        const images = document.querySelectorAll('.aboutslide img');
+        let = currentIndex = 0;
+        setInterval(() => {
+            images[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % images.length;
+            images[currentIndex].classList.add('active');
+        }, 6000);
+    </script>
+</body>
+</html>

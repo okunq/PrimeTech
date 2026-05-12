@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrimeTech:Checkout</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="container">
+        <a href="index.html" class="logo">PrimeTech</a>
+        <nav>
+            <ul>
+                <!-- Кнопка повернення -->
+                <li><a href="catalog.html" class="header_about_btn">Повернутися до покупок</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="checkout_page container">
+        
+        <div class="checkout_left">
+            <h2>Оформлення замовлення</h2>
+            
+            <form class="checkout_form" id="checkout_form">
+                <h3>1. Контактні дані</h3>
+                <div class="form_row">
+                    <input type="text" id="c_name" class="auth_input" placeholder="Ім'я" required>
+                    <input type="text" id="c_surname" class="auth_input" placeholder="Прізвище" required>
+                </div>
+                <input type="tel" id="c_phone" class="auth_input" placeholder="Телефон" required>
+                <input type="email" id="c_email" class="auth_input" placeholder="Email">
+
+                <h3>2. Доставка</h3>
+                <div class="delivery_options">
+                    <label class="radio_label">
+                        <input type="radio" name="delivery" value="Нова Пошта (У відділення)" checked>
+                        <span class="radio_custom"></span> Нова Пошта (У відділення)
+                    </label>
+                    <label class="radio_label">
+                        <input type="radio" name="delivery" value="Кур'єр за адресою">
+                        <span class="radio_custom"></span> Кур'єр за адресою
+                    </label>
+                </div>
+                <div class="form_row">
+                    <input type="text" id="c_city" class="auth_input" placeholder="Місто" list="cities_list" autocomplete="off" required>
+                    <datalist id="cities_list">
+                        <option value="Київ"></option>
+                        <option value="Харків"></option>
+                        <option value="Одеса"></option>
+                        <option value="Дніпро"></option>
+                        <option value="Львів"></option>
+                        <option value="Запоріжжя"></option>
+                        <option value="Кривий Ріг"></option>
+                        <option value="Миколаїв"></option>
+                        <option value="Вінниця"></option>
+                        <option value="Херсон"></option>
+                        <option value="Полтава"></option>
+                        <option value="Чернігів"></option>
+                        <option value="Черкаси"></option>
+                        <option value="Житомир"></option>
+                        <option value="Суми"></option>
+                        <option value="Хмельницький"></option>
+                        <option value="Чернівці"></option>
+                        <option value="Рівне"></option>
+                        <option value="Тернопіль"></option>
+                        <option value="Івано-Франківськ"></option>
+                        <option value="Луцьк"></option>
+                        <option value="Ужгород"></option>
+                    </datalist>
+
+                    <input type="text" id="c_address" class="auth_input" placeholder="Відділення / Поштомат / Адреса" list="offices_list" autocomplete="off" required>
+                    <datalist id="offices_list">
+                        </datalist>
+                </div>
+
+                <h3>3. Спосіб оплати</h3>
+                <div class="delivery_options">
+                    <label class="radio_label">
+                        <input type="radio" name="payment" value="Оплата при отриманні" checked>
+                        <span class="radio_custom"></span> Оплата при отриманні
+                    </label>
+                    <label class="radio_label">
+                        <input type="radio" name="payment" value="Карткою онлайн">
+                        <span class="radio_custom"></span> Карткою онлайн
+                    </label>
+                </div>
+            </form>
+        </div>
+
+        <div class="checkout_right">
+            <div class="summary_box">
+                <h3>Ваше замовлення</h3>
+                <div class="summary_items">
+                    <div class="summary_item">
+                        <span>Ігровий Ноутбук ASUS ROG Strix</span>
+                        <span>45 999 ₴</span>
+                    </div>
+                </div>
+                <div class="summary_total">
+                    <span>До сплати:</span>
+                    <span>45 999 ₴</span>
+                </div>
+                <button id="submit_order_btn" class="auth_submit_btn" style="width: 100%;">Підтвердити замовлення</button>
+            </div>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user) {
+                // Если пользователь залогинен — подставляем имя и телефон из базы
+                document.getElementById('c_name').value = user.name;
+                // Мы не сохраняли телефон в localStorage при входе, 
+                // но если нужно, можно обновить маршрут логина на сервере, чтобы он его отдавал
+            }
+            // ... твой код отрисовки чека ...
+        });
+
+        // 1. При завантаженні сторінки відмальовуємо чек
+        document.addEventListener('DOMContentLoaded', () => {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const summaryItems = document.querySelector('.summary_items');
+            const summaryTotal = document.querySelector('.summary_total span:last-child');
+            
+            let totalSum = 0;
+            summaryItems.innerHTML = '';
+            
+            cart.forEach(item => {
+            let qty = item.quantity || 1;
+            let itemTotal = parseFloat(item.price) * qty;
+            totalSum += itemTotal;
+            
+            summaryItems.innerHTML += `
+                <div class="summary_item">
+                    <span>${item.name} <b>x${qty}</b></span>
+                    <span>${itemTotal.toFixed(2)} ₴</span>
+                </div>
+            `;
+            });
+            summaryTotal.textContent = totalSum.toFixed(2) + ' ₴';
+        });
+
+        // Генерація списку відділень та поштоматів для випадаючого списку
+        document.addEventListener('DOMContentLoaded', () => {
+            const officesList = document.getElementById('offices_list');
+            if (officesList) {
+                let optionsHTML = '';
+                
+                // Генеруємо 500 звичайних відділень
+                for (let i = 1; i <= 500; i++) {
+                    optionsHTML += `<option value="Відділення №${i}"></option>`;
+                }
+                
+                // Генеруємо 100 поштоматів (5-значні номери, наприклад 10001, 10002...)
+                for (let i = 10001; i <= 10100; i++) {
+                    optionsHTML += `<option value="Поштомат №${i}"></option>`;
+                }
+                
+                officesList.innerHTML = optionsHTML;
+            }
+        });
+
+        // 2. Відправка замовлення
+        document.getElementById('submit_order_btn').addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            if (cart.length === 0) {
+                alert("Ваш кошик порожній! Додайте товари для оформлення.");
+                return;
+            }
+
+            const name = document.getElementById('c_name').value;
+            const surname = document.getElementById('c_surname').value;
+            const phone = document.getElementById('c_phone').value;
+            const city = document.getElementById('c_city').value;
+            const address = document.getElementById('c_address').value;
+
+            if (!name || !surname || !phone || !city || !address) {
+                alert("Будь ласка, заповніть всі обов'язкові поля!");
+                return;
+            }
+
+            const delivery = document.querySelector('input[name="delivery"]:checked').value;
+            const payment = document.querySelector('input[name="payment"]:checked').value;
+            const fullAddress = `м. ${city}, ${address}. Отримувач: ${name} ${surname}, тел: ${phone}`;
+            
+            const finalTotal = cart.reduce((sum, item) => sum + (parseFloat(item.price) * (item.quantity || 1)), 0);
+
+            const orderData = {
+                delivery_method: delivery,
+                payment_method: payment,
+                delivery_address: fullAddress,
+                total_price: finalTotal, // ПЕРЕДАЄМО РЕАЛЬНУ СУМУ З МАТЕМАТИКИ
+                items: cart
+            };
+
+            try {
+                const response = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                });
+
+                if (response.ok) {
+                    // ОЧИЩАЄМО КОШИК ПІСЛЯ ПОКУПКИ
+                    localStorage.removeItem('cart'); 
+                    
+                    document.querySelector('.checkout_page').innerHTML = `
+                        <div style="text-align: center; width: 100%; padding: 50px;">
+                            <h2>Дякуємо за замовлення! 🎉</h2>
+                            <p style="color: #b0b0b0; margin-top: 15px;">Наші менеджери скоро з вами зв'яжуться.</p>
+                            <a href="catalog.html" class="auth_submit_btn" style="display: inline-block; margin-top: 30px; text-decoration: none;">Повернутися в каталог</a>
+                        </div>
+                    `;
+                } else {
+                    alert("Помилка при оформленні замовлення.");
+                }
+            } catch (error) {
+                console.error("Помилка мережі:", error);
+            }
+        });
+    </script>
+</body>
+</html>

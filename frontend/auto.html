@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrimeTech:Autorization</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="container">
+        <a href="index.html" class="logo">PrimeTech</a>
+        <nav>
+            <ul>
+                <li><a href="about.html" class="header_about_btn">About Us</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="auth_page container">
+        <div class="auth_box">
+            <h2 id="auth_title">Реєстрація</h2>
+            <form class="auth_form" id="auth_form">
+                
+                <div id="register_fields" style="display: flex; flex-direction: column; gap: 15px; width: 100%; margin-bottom: 15px;">
+                    <input type="text" id="reg_name" class="auth_input" placeholder="Ім'я...">
+                    <input type="tel" id="reg_phone" class="auth_input" placeholder="Номер телефону...">
+                </div>
+                
+                <input type="email" id="auth_email" class="auth_input" placeholder="Email..." required>
+                <input type="password" id="auth_password" class="auth_input" placeholder="Пароль..." required>
+                
+                <button type="submit" id="auth_submit_btn" class="auth_submit_btn">Зареєструватися</button>
+            </form>
+            
+            <div class="auth_switch">
+                <span id="switch_text">Вже є акаунт?</span> 
+                <a href="#" id="switch_mode_btn">Увійти</a>
+            </div>
+        </div>
+    </div>
+    <script>
+    // 1. ОДРАЗУ ПЕРЕВІРЯЄМО: ЯКЩО ВЖЕ УВІЙШОВ -> ВИКИДАЄМО В КАТАЛОГ
+        if (localStorage.getItem('user')) {
+            window.location.href = 'catalog.html';
+        }
+
+        // 2. СТАВИМО "ВХІД" ЗА ЗАМОВЧУВАННЯМ
+        let isLoginMode = true; 
+
+        const authTitle = document.getElementById('auth_title');
+        const registerFields = document.getElementById('register_fields');
+        const authSubmitBtn = document.getElementById('auth_submit_btn');
+        const switchText = document.getElementById('switch_text');
+        const switchModeBtn = document.getElementById('switch_mode_btn');
+        const authForm = document.getElementById('auth_form');
+
+        // 3. НАЛАШТОВУЄМО ВІЗУАЛ ПРИ ЗАВАНТАЖЕННІ (Ховаємо зайве)
+        document.addEventListener('DOMContentLoaded', () => {
+            authTitle.textContent = 'Вхід';
+            registerFields.style.display = 'none';
+            authSubmitBtn.textContent = 'Увійти';
+            switchText.textContent = 'Немає акаунту?';
+            switchModeBtn.textContent = 'Зареєструватися';
+        });
+
+        // 4. Анімація перемикання між Входом і Реєстрацією
+        switchModeBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            isLoginMode = !isLoginMode;
+
+            if (isLoginMode) {
+                // Режим ВХОДУ
+                authTitle.textContent = 'Вхід';
+                registerFields.style.display = 'none';
+                authSubmitBtn.textContent = 'Увійти';
+                switchText.textContent = 'Немає акаунту?';
+                switchModeBtn.textContent = 'Зареєструватися';
+            } else {
+                // Режим РЕЄСТРАЦІЇ
+                authTitle.textContent = 'Реєстрація';
+                registerFields.style.display = 'flex';
+                authSubmitBtn.textContent = 'Зареєструватися';
+                switchText.textContent = 'Вже є акаунт?';
+                switchModeBtn.textContent = 'Увійти';
+            }
+        });
+
+        // 5. Відправка даних на сервер
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('auth_email').value;
+            const password = document.getElementById('auth_password').value;
+
+            if (isLoginMode) {
+                // =============== ЛОГІКА ВХОДУ ===============
+                try {
+                    const response = await fetch('/api/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password })
+                    });
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        localStorage.setItem('user', JSON.stringify(data.user)); 
+                        window.location.href = 'catalog.html';
+                    } else {
+                        alert('Помилка: ' + data.error);
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+            } else {
+                // =============== ЛОГІКА РЕЄСТРАЦІЇ ===============
+                const name = document.getElementById('reg_name').value;
+                const phone = document.getElementById('reg_phone').value;
+
+                try {
+                    const response = await fetch('/api/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, phone, email, password })
+                    });
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        localStorage.setItem('user', JSON.stringify(data.user));
+                        window.location.href = 'catalog.html';
+                    } else {
+                        alert('Помилка: ' + data.error);
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

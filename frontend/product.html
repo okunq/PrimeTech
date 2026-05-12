@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrimeTech:Product</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="container">
+            <a href="index.html" class="logo">PrimeTech</a>
+            <nav>
+                <ul>
+                    <li class="catalog_link">
+                        <a href="catalog.html">
+                            <img src="img/gr4.svg" alt="gr4">
+                            Каталог
+                        </a>
+                    </li>
+                    <li class="cart_link">
+                        <a href="#" id="open_cart_btn" style="color: white; display: flex; align-items: center; gap: 10px;">
+                        <!-- Якщо є іконка, додай її сюди: <img src="img/cart.svg" alt="cart"> -->
+                        🛒 Кошик
+                        </a>
+                    </li>
+                    <li class="account_link">
+                        <a href="auto.html">
+                            <img src="img/account.svg" alt="account">
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+    </header>
+    <div class="product_page container">
+    
+        <!-- Хлібні крихти (Навігація) -->
+        <div class="breadcrumbs">
+            <a href="catalog.html">Каталог</a> > <a href="#">Ноутбуки</a> > 
+            <span>ASUS ROG Strix</span>
+        </div>
+
+        <!-- Головний блок товару -->
+        <div class="product_main">
+            <!-- Ліва частина: Велика картинка -->
+            <div class="product_gallery">
+                <img src="img/laptop.jpg" alt="Ігровий Ноутбук ASUS ROG Strix">
+            </div>
+
+            <!-- Права частина: Інформація та покупка -->
+            <div class="product_details">
+                <h1 class="product_title_large">Ігровий Ноутбук ASUS ROG Strix 15.6"</h1>
+                <div class="product_status">В наявності</div>
+                
+                <div class="product_price_block">
+                    <span class="product_price_large">45 999 ₴</span>
+                    <button class="buy_btn_large">В кошик</button>
+                </div>
+                
+                <div class="product_short_desc">
+                    <p>Потужний ігровий ноутбук з найсучаснішою відеокартою, 
+                        екраном 165Hz та механічною клавіатурою. 
+                        Ідеальний вибір для геймерів та роботи з важкими програмами</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="reviews_section container" style="margin-top: 50px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 40px;">
+        <h2>Відгуки покупців</h2>
+        
+        <div id="review_form_container" style="display: none; margin: 30px 0; background: rgba(255,255,255,0.03); padding: 25px; border-radius: 15px;">
+            <h3>Залишити відгук</h3>
+            <div id="star_rating" style="margin: 15px 0; font-size: 28px; color: #555; cursor: pointer;">
+                <span class="star" data-v="1">★</span><span class="star" data-v="2">★</span><span class="star" data-v="3">★</span><span class="star" data-v="4">★</span><span class="star" data-v="5">★</span>
+            </div>
+            <textarea id="review_text" class="auth_input" rows="3" placeholder="Ваші враження..."></textarea>
+            <button id="submit_review_btn" class="auth_submit_btn" style="margin-top: 15px; width: 200px;">Надіслати</button>
+        </div>
+
+        <div id="reviews_list" style="margin-top: 30px;"></div>
+    </div>
+
+    <footer>
+        <div class="blocks container">
+            <div class="footer-col">
+                <h2>Contacts</h2>
+                <div class="footer-info">
+                    <p>+380951234567</p>
+                    <p>primetech@gmail.com.ua</p>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h2>Follow Us</h2>
+                <div class="footer-icons">
+                    <a href="https://www.instagram.com/" target="_blank">
+                        <img src="img/insta.svg" alt="Instagram">
+                    </a>
+                    <a href="https://t.me/+9OQus67JL3VkMjY6" target="_blank">
+                        <img src="img/telegram.svg" alt="Telegram">
+                    </a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h2>Download App</h2>
+                <div class="footer-icons">
+                    <a href="ul_googleplay"><img src="img/googleplay.svg" alt="Google Play"></a>
+                    <a href="ul_appstore"><img src="img/appstore.svg" alt="App Store"></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <a href="about.html" class="footer-btn">About Us</a>
+            </div>
+        </div>
+    </footer>
+    <div class="cart_overlay" id="cart_overlay"></div>
+    
+    <div class="cart_panel" id="cart_panel">
+        <div class="cart_header">
+            <h2>Ваш кошик</h2>
+            <button class="close_cart_btn" id="close_cart_btn">&times;</button>
+        </div>
+        
+        <div class="cart_items">
+            <!-- Приклад доданого товару -->
+            <div class="cart_item">
+                <img src="img/laptop.jpg" alt="Ноутбук">
+                <div class="cart_item_info">
+                    <h4>Ігровий Ноутбук ASUS ROG Strix</h4>
+                    <span class="cart_item_price">45 999 ₴</span>
+                </div>
+                <button class="remove_item_btn">Видалити</button>
+            </div>
+        </div>
+        
+        <div class="cart_footer">
+            <div class="cart_total">
+                <span>Разом:</span>
+                <span>45 999 ₴</span>
+            </div>
+            <a href="checkout.html" class="checkout_btn">Оформити замовлення</a>
+        </div>
+    </div>
+    <!-- ================= КІНЕЦЬ КОШИКА ================= -->
+
+    <!-- СКРИПТ ДЛЯ ВІДКРИТТЯ/ЗАКРИТТЯ -->
+    <script>
+        const openCartBtn = document.getElementById('open_cart_btn');
+        const closeCartBtn = document.getElementById('close_cart_btn');
+        const cartPanel = document.getElementById('cart_panel');
+        const cartOverlay = document.getElementById('cart_overlay');
+        const buyBtns = document.querySelectorAll('.buy_btn_large'); // Кнопка на сторінці товару
+
+        // Функція відкриття
+        function openCart(e) {
+            e.preventDefault();
+            cartPanel.classList.add('active');
+            cartOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Забороняємо скролити сторінку під кошиком
+        }
+
+        // Функція закриття
+        function closeCart() {
+            cartPanel.classList.remove('active');
+            cartOverlay.classList.remove('active');
+            document.body.style.overflow = ''; // Повертаємо скрол
+        }
+
+        // Вішаємо події на кліки
+        if(openCartBtn) openCartBtn.addEventListener('click', openCart);
+        if(closeCartBtn) closeCartBtn.addEventListener('click', closeCart);
+        if(cartOverlay) cartOverlay.addEventListener('click', closeCart);
+        
+        // Відкривати кошик також при натисканні "В кошик" на сторінці товару
+        buyBtns.forEach(btn => btn.addEventListener('click', openCart));
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. Читаємо ID товару з адресного рядка браузера (наприклад, ?id=1)
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+
+            if (!productId) {
+                alert("Помилка: Товар не вибрано!");
+                window.location.href = 'catalog.html';
+                return;
+            }
+
+            try {
+                // 2. Робимо запит до сервера за конкретним товаром
+                const response = await fetch(`/api/products/${productId}`);
+                
+                if (!response.ok) {
+                    throw new Error('Товар не знайдено');
+                }
+
+                const product = await response.json();
+
+                // 3. Підставляємо дані товару в HTML сторінки
+                document.querySelector('.product_title_large').textContent = product.name;
+                document.querySelector('.product_price_large').textContent = `${product.price} ₴`;
+                document.querySelector('.product_short_desc').innerHTML = `<p style="white-space: pre-line;">${product.description || 'Опис відсутній.'}</p>`;
+                
+                // Знаходимо картинку в галереї та міняємо її
+                const productImage = document.querySelector('.product_gallery img');
+                if (productImage) {
+                    productImage.src = product.image_url;
+                    productImage.alt = product.name;
+                }
+
+                // Змінюємо статус (В наявності / Немає)
+                const statusSpan = document.querySelector('.product_status');
+                if (statusSpan) {
+                    statusSpan.textContent = product.status;
+                    statusSpan.style.color = product.status === 'В наявності' ? '#4CAF50' : '#F44336';
+                }
+
+                // 4. Оновлюємо кнопку "Купити", щоб вона додавала правильний товар у кошик
+                // (Використовуємо функцію addToCart з твого script.js)
+                const buyBtn = document.querySelector('.buy_btn_large');
+                if (buyBtn) {
+                    buyBtn.setAttribute('onclick', `addToCart(${product.id}, '${product.name}', ${product.price}, '${product.image_url}')`);
+                }
+
+            } catch (error) {
+                console.error("Помилка:", error);
+                document.querySelector('.product_main').innerHTML = `<h2 style="color: white;">На жаль, товар не знайдено.</h2>`;
+            }
+        });
+
+        let selectedRating = 0;
+
+// Логіка вибору зірок
+document.querySelectorAll('.star').forEach(star => {
+    star.onmouseover = function() { highlightStars(this.dataset.v); }
+    star.onmouseout = function() { highlightStars(selectedRating); }
+    star.onclick = function() { selectedRating = this.dataset.v; highlightStars(selectedRating); }
+});
+
+function highlightStars(v) {
+    document.querySelectorAll('.star').forEach(s => {
+        s.style.color = s.dataset.v <= v ? '#FFD700' : '#555';
+    });
+}
+
+// Показуємо форму лише якщо юзер увійшов
+const user = JSON.parse(localStorage.getItem('user'));
+if(user) document.getElementById('review_form_container').style.display = 'block';
+
+// Відправка відгуку
+document.getElementById('submit_review_btn').onclick = async () => {
+    const comment = document.getElementById('review_text').value;
+    if(!selectedRating || !comment) return alert("Оберіть рейтинг та напишіть текст!");
+
+    await fetch('/api/reviews', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ product_id: productId, user_id: user.id, rating: selectedRating, comment })
+    });
+    location.reload();
+};
+
+// Завантаження відгуків
+async function loadReviews() {
+    const res = await fetch(`/api/reviews/${productId}`);
+    const reviews = await res.json();
+    const list = document.getElementById('reviews_list');
+    
+    reviews.forEach(r => {
+        list.innerHTML += `
+            <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding: 20px 0;">
+                <div style="display:flex; justify-content: space-between;">
+                    <strong>${r.user_name}</strong>
+                    <span style="color: #FFD700;">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span>
+                </div>
+                <p style="margin-top: 10px; color: #b0b0b0;">${r.comment}</p>
+            </div>
+        `;
+    });
+}
+loadReviews();
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>

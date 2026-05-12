@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrimeTech:Admin</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        // Впиши сюди email, під яким ти зареєструвався!
+        const ADMIN_EMAIL = 'kaptuhandrej@gmail.com'; // Або твій особистий email
+
+        // Дістаємо дані поточного користувача з пам'яті
+        const currentUser = JSON.parse(localStorage.getItem('user'));
+
+        if (!currentUser) {
+            // Якщо людина взагалі не увійшла в акаунт -> викидаємо на сторінку входу
+            window.location.href = 'auto.html';
+        } else if (currentUser.email !== ADMIN_EMAIL) {
+            // Якщо людина увійшла, але її email не збігається з адмінським -> викидаємо в каталог
+            alert('🛑 Доступ заборонено! Ця сторінка тільки для адміністраторів.');
+            window.location.href = 'catalog.html';
+        }
+    </script>
+</head>
+<body>
+    <div class="admin_layout container">
+        
+        <!-- Бокова панель адміністратора -->
+        <aside class="admin_sidebar">
+            <a href="index.html" class="logo admin_logo">PrimeTech</a>
+            <nav class="admin_nav">
+                <a href="#" class="active_admin_link" id="link_products">📦 Товари</a>
+                <a href="#" id="link_orders">🛒 Замовлення</a>
+                <a href="#" id="link_users">👥 Користувачі</a>
+                <a href="#">⚙️ Налаштування</a>
+            </nav>
+            <a href="catalog.html" class="admin_exit">Вийти в магазин</a>
+        </aside>
+
+        <!-- Головна робоча зона -->
+        <main class="admin_content">
+            <div class="admin_stats_grid" style="display: flex; gap: 20px; margin-bottom: 30px;">
+                <div class="stat_card" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; flex: 1; border: 1px solid rgba(255,255,255,0.1);">
+                    <h4 style="color: #b0b0b0; font-size: 14px; margin-bottom: 10px;">НОВИХ ЗАМОВЛЕНЬ</h4>
+                    <span id="stat_new_orders" style="font-size: 32px; font-weight: bold; color: #FFD700;">0</span>
+                </div>
+                <div class="stat_card" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; flex: 1; border: 1px solid rgba(255,255,255,0.1);">
+                    <h4 style="color: #b0b0b0; font-size: 14px; margin-bottom: 10px;">ЗАРЕЄСТРОВАНО КЛІЄНТІВ</h4>
+                    <span id="stat_total_users" style="font-size: 32px; font-weight: bold; color: #fff;">0</span>
+                </div>
+            </div>
+
+            <div class="admin_topbar">
+                <h2 id="admin_page_title">Управління товарами</h2>
+                <button class="add_product_btn" id="main_add_btn">+ Додати товар</button>
+            </div>
+
+            <div class="admin_table_wrapper" id="products_tab_content">
+                <table class="admin_table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Фото</th>
+                            <th>Назва</th>
+                            <th>Категорія</th>
+                            <th>Ціна</th>
+                            <th>Статус</th>
+                            <th>Дії</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin_products_table">
+                        </tbody>
+                </table>
+            </div>
+
+            <div class="admin_table_wrapper" id="orders_tab_content" style="display: none;">
+                
+                <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
+                    <a href="/api/admin/export-orders" class="auth_submit_btn" style="text-decoration: none; width: auto; padding: 10px 20px; background: #4CAF50; margin-top: 0; display: inline-block;">
+                        📥 Скачати звіт (CSV)
+                    </a>
+                </div>
+
+                <table class="admin_table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Інформація</th>
+                            <th>Оплата</th>
+                            <th>Сума</th>
+                            <th>Статус</th> 
+                            <th>Дії</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin_orders_table">
+                        </tbody>
+                </table>
+            </div>
+
+            <div class="admin_table_wrapper" id="users_tab_content" style="display: none;">
+                <table class="admin_table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Ім'я</th>
+                            <th>Контакти</th>
+                            <th>Дата реєстрації</th>
+                            <th>Дії</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin_users_table">
+                        </tbody>
+                </table>
+            </div>
+        </main>
+
+    </div>
+    <div class="modal_overlay" id="add_product_modal">
+        <div class="modal_content">
+            <div class="modal_header">
+                <h2>Додати новий товар</h2>
+                <button class="close_modal_btn" id="close_modal_btn">&times;</button>
+            </div>
+            
+            <form class="admin_form" id="add_product_form">
+                <div class="form_group">
+                    <label>Назва товару</label>
+                    <input type="text" id="new_name" class="auth_input" placeholder="Наприклад: ASUS ROG Strix" required>
+                </div>
+                
+                <div class="form_row">
+                    <div class="form_group">
+                        <label>Категорія</label>
+                        <select id="new_category" class="auth_input">
+                            <option value="1">Ноутбуки</option>
+                            <option value="2">Монітори</option>
+                            <option value="3">Клавіатури</option>
+                            <option value="4">Коврики</option>
+                            <option value="5">Мишки</option>
+                            <option value="6">Мікрофони</option>
+                            <option value="7">Камери</option>
+                            <option value="8">Смартфони</option>
+                            <option value="9">Планшети</option>
+                            <option value="10">Навушники</option>
+                            <option value="11">Зарядні пристрої</option>
+                            <option value="12">Телевізори</option>
+                            <option value="13">Смарт годинники</option>
+                            <option value="14">Фотоапарати</option>
+                            <option value="15">Ігрові консолі</option>
+                        </select>
+                    </div>
+                    <div class="form_group">
+                        <label>Ціна (₴)</label>
+                        <input type="number" id="new_price" class="auth_input" placeholder="0" required>
+                    </div>
+                </div>
+                
+                <div class="form_group">
+                    <label>Фотографія товару</label>
+                    <div class="auth_input" style="display: flex; justify-content: flex-end; align-items: center; padding: 6px 6px 6px 20px;">
+                        
+                        <span id="file_name_display" style="color: rgba(0,0,0,0.7); margin-right: auto; font-size: 16px;"></span>
+                        
+                        <label for="new_image_file" class="auth_submit_btn" style="margin-top: 0; padding: 10px 20px; font-size: 14px; cursor: pointer;">
+                            Оберіть файл
+                        </label>
+                        
+                        <input type="file" id="new_image_file" accept="image/*" style="display: none;">
+                    </div>
+                    <input type="hidden" id="existing_image_url">
+                </div>
+                <div class="form_group">
+                    <label>Опис / Характеристики</label>
+                    <textarea id="new_description" class="auth_input" rows="4" placeholder="Наприклад: Процесор Intel Core i7, 16GB RAM..." required></textarea>
+                </div>
+                
+                <div class="form_group">
+                    <label>Статус товару</label>
+                    <select id="new_status" class="auth_input">
+                        <option value="В наявності">В наявності</option>
+                        <option value="Немає в наявності">Немає в наявності</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="auth_submit_btn" style="width: 100%; margin-top: 20px;">Зберегти товар</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- СКРИПТ ДЛЯ РОБОТИ МОДАЛКИ -->
+    <script>
+        const modal = document.getElementById('add_product_modal');
+        const openBtn = document.querySelector('.add_product_btn');
+        const closeBtn = document.getElementById('close_modal_btn');
+
+        // Відкрити
+        openBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            modal.classList.add('active');
+        });
+
+        // Закрити на хрестик
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        // Закрити при кліку на темний фон
+        modal.addEventListener('click', (e) => {
+            if(e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+
+        // Ловим отправку формы
+        // Ловим отправку формы
+        const form = document.getElementById('add_product_form');
+        let editingProductId = null; // Змінна, яка пам'ятає, чи ми зараз редагуємо товар
+
+        // Коли натискаємо "+ Додати товар", очищаємо форму і скидаємо ID редагування
+        openBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            form.reset();
+            document.querySelector('.modal_header h2').textContent = 'Додати новий товар';
+            document.querySelector('#add_product_form .auth_submit_btn').textContent = 'Зберегти товар';
+            editingProductId = null;
+            modal.classList.add('active');
+        });
+
+        // Показуємо назву вибраного файлу
+        document.getElementById('new_image_file').addEventListener('change', function(e) {
+            const display = document.getElementById('file_name_display');
+            if (e.target.files.length > 0) {
+                display.textContent = e.target.files[0].name; // Пишемо ім'я файлу
+            } else {
+                display.textContent = ''; // Очищаємо, якщо скасували вибір
+            }
+        });
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault(); 
+
+            // 1. Спочатку розбираємося з картинкою
+            let finalImageUrl = document.getElementById('existing_image_url').value;
+            const fileInput = document.getElementById('new_image_file');
+
+            // Якщо користувач вибрав новий файл
+            if (fileInput.files.length > 0) {
+                const formData = new FormData();
+                formData.append('image', fileInput.files[0]);
+
+                try {
+                    const uploadRes = await fetch('/api/upload', {
+                        method: 'POST',
+                        body: formData // ВАЖЛИВО: для файлів headers не вказуємо, браузер сам підставить потрібний multipart/form-data
+                    });
+                    const uploadData = await uploadRes.json();
+                    
+                    if (uploadRes.ok) {
+                        finalImageUrl = uploadData.imageUrl; // Отримуємо новий шлях (напр. img/product-123.jpg)
+                    } else {
+                        alert('Помилка завантаження картинки');
+                        return; // Зупиняємо збереження товару
+                    }
+                } catch (err) {
+                    console.error('Помилка мережі при завантаженні картинки:', err);
+                    return;
+                }
+            }
+
+            // Якщо це новий товар, і картинку не вибрали - ставимо заглушку
+            if (!finalImageUrl) finalImageUrl = 'img/laptop.jpg';
+
+            // 2. Збираємо всі дані товару
+            const productData = {
+                name: document.getElementById('new_name').value,
+                category_id: document.getElementById('new_category').value,
+                price: document.getElementById('new_price').value,
+                image_url: finalImageUrl, // Підставляємо правильну картинку
+                status: document.getElementById('new_status').value,
+                description: document.getElementById('new_description').value
+            };
+
+            // 3. Відправляємо товар у базу
+            try {
+                let response;
+                if (editingProductId) {
+                    response = await fetch(`/api/products/${editingProductId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(productData)
+                    });
+                } else {
+                    response = await fetch('/api/products', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(productData)
+                    });
+                }
+
+                if (response.ok) {
+                    form.reset(); 
+                    document.getElementById('existing_image_url').value = '';
+                    modal.classList.remove('active'); 
+                    fetchAdminProducts(); // Оновлюємо таблицю
+                } else {
+                    alert('Помилка при збереженні товара');
+                }
+            } catch (error) {
+                console.error('Помилка:', error);
+            }
+        });
+
+        function openEditModal(id, name, categoryId, price, imageUrl, status, description) {
+            editingProductId = id; 
+            
+            document.getElementById('new_name').value = name;
+            document.getElementById('new_category').value = categoryId;
+            document.getElementById('new_price').value = price;
+            
+            
+            // Скидаємо інпут файлу, але запам'ятовуємо стару картинку
+            document.getElementById('new_image_file').value = '';
+            document.getElementById('existing_image_url').value = imageUrl;
+            document.getElementById('file_name_display').textContent = '';
+
+            document.getElementById('new_status').value = status || 'В наявності';
+            document.getElementById('new_description').value = description || '';
+
+            document.querySelector('.modal_header h2').textContent = 'Редагувати товар';
+            document.querySelector('#add_product_form .auth_submit_btn').textContent = 'Обрати файл';
+
+            modal.classList.add('active');
+        }
+        // Функция загрузки товаров для админки
+        async function fetchAdminProducts() {
+            try {
+                const response = await fetch('/api/products');
+                const products = await response.json();
+                
+                const tableBody = document.getElementById('admin_products_table');
+                tableBody.innerHTML = ''; 
+
+                products.forEach(product => {
+                    let statusClass = product.status === 'В наявності' ? 'in_stock' : 'sold_out';
+                    
+                    const categoryMap = {
+                        1: 'Ноутбуки', 2: 'Монітори', 3: 'Клавіатури', 4: 'Коврики', 5: 'Мишки',
+                        6: 'Мікрофони', 7: 'Камери', 8: 'Смартфони', 9: 'Планшети', 10: 'Навушники',
+                        11: 'Зарядні пристрої', 12: 'Телевізори', 13: 'Смарт годинники', 14: 'Фотоапарати', 15: 'Ігрові консолі'
+                    };
+                    let categoryName = categoryMap[product.category_id] || 'Інше';
+
+                    // Важливо: ми безпечно передаємо назву товару (замінюючи одинарні лапки, якщо вони там є)
+                    // Важливо: безпечно обробляємо назву та опис (замінюємо лапки та переноси рядків)
+                    const safeName = product.name.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                    const safeDesc = (product.description || '')
+                        .replace(/'/g, "\\'")
+                        .replace(/"/g, "&quot;")
+                        .replace(/\n/g, "\\n")
+                        .replace(/\r/g, "");
+
+                    const row = `
+                        <tr>
+                            <td>#00${product.id}</td>
+                            <td><img src="${product.image_url}" alt="Product" class="admin_item_img"></td>
+                            <td>${product.name}</td>
+                            <td>${categoryName}</td>
+                            <td>${product.price} ₴</td>
+                            <td><span class="status_badge ${statusClass}">${product.status || 'В наявності'}</span></td>
+                            <td class="admin_actions_cell">
+                                <button class="action_edit" onclick="openEditModal(${product.id}, '${safeName}', ${product.category_id}, ${product.price}, '${product.image_url}', '${product.status || 'В наявності'}', '${safeDesc}')">✏️ Редагувати</button>
+                                <button class="action_delete" onclick="deleteProduct(${product.id})">🗑️ Видалити</button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            } catch (error) {
+                console.error('Ошибка загрузки:', error);
+            }
+        }
+
+        // Запускаем при открытии страницы
+        fetchAdminProducts();
+
+        // Функция удаления товара
+        async function deleteProduct(id) {
+            if (!confirm('Ви впевнені, що хочете видалити цей товар?')) return;
+            try {
+                const response = await fetch(`/api/products/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    fetchAdminProducts(); // Обновляем таблицу после удаления
+                }
+            } catch (error) {
+                console.error('Помилка:', error);
+            }
+        }
+
+        // ================= ВКЛАДКИ (ТОВАРИ / ЗАМОВЛЕННЯ) =================
+        const linkProducts = document.getElementById('link_products');
+        const linkOrders = document.getElementById('link_orders');
+        const tabProducts = document.getElementById('products_tab_content');
+        const tabOrders = document.getElementById('orders_tab_content');
+        const mainAddBtn = document.getElementById('main_add_btn');
+        const pageTitle = document.getElementById('admin_page_title');
+        const linkUsers = document.getElementById('link_users');
+        const tabUsers = document.getElementById('users_tab_content');
+        const adminUsersTable = document.getElementById('admin_users_table');
+
+        // Клік на вкладку "Товари"
+        // Клік на вкладку "Товари"
+        linkProducts.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Знімаємо активність з усіх, даємо тільки Товарам
+            [linkProducts, linkOrders, linkUsers].forEach(l => l.classList.remove('active_admin_link'));
+            linkProducts.classList.add('active_admin_link');
+            
+            // Показуємо товари, ХОВАЄМО ВСЕ ІНШЕ
+            tabProducts.style.display = 'block';
+            tabOrders.style.display = 'none';
+            tabUsers.style.display = 'none'; 
+            
+            mainAddBtn.style.display = 'block'; 
+            pageTitle.textContent = 'Управління товарами';
+        });
+
+        // Клік на вкладку "Замовлення"
+        linkOrders.addEventListener('click', (e) => {
+            e.preventDefault();
+            [linkProducts, linkOrders, linkUsers].forEach(l => l.classList.remove('active_admin_link'));
+            linkOrders.classList.add('active_admin_link');
+            
+            // Показуємо замовлення, ХОВАЄМО ВСЕ ІНШЕ
+            tabOrders.style.display = 'block';
+            tabProducts.style.display = 'none';
+            tabUsers.style.display = 'none'; 
+            
+            mainAddBtn.style.display = 'none'; 
+            pageTitle.textContent = 'Управління замовленнями';
+            fetchAdminOrders(); 
+        });
+
+        // ================= ЛОГІКА ЗАМОВЛЕНЬ =================
+        async function fetchAdminOrders() {
+            try {
+                const response = await fetch('/api/orders');
+                const orders = await response.json();
+                
+                const tableBody = document.getElementById('admin_orders_table');
+                tableBody.innerHTML = ''; 
+
+                // Масив можливих статусів
+                const statuses = ['Новий', 'В обробці', 'Відправлено', 'Виконано', 'Скасовано'];
+
+                orders.forEach(order => {
+                    // Генеруємо випадаючий список для кожного замовлення
+                    let statusOptions = statuses.map(s => 
+                        `<option value="${s}" ${order.status === s ? 'selected' : ''}>${s}</option>`
+                    ).join('');
+
+                    const row = `
+                        <tr>
+                            <td><strong>#00${order.id}</strong></td>
+                            <td style="line-height: 1.5; color: #e0e0e0;">
+                                <div style="margin-bottom: 8px;">
+                                    <strong>Товари:</strong> <span style="color: #FFD700;">${order.items_list || 'Не вказано'}</span>
+                                </div>
+                                <div>
+                                    <strong>Адреса:</strong> ${order.delivery_address}
+                                </div>
+                                <span style="color: #4CAF50; font-size: 12px; display: block; margin-top: 5px;">${order.delivery_method}</span>
+                            </td>
+                            <td>${order.payment_method}</td>
+                            <td><strong style="color: #fff;">${order.total_price} ₴</strong></td>
+                            
+                            <td>
+                                <select class="auth_input" style="padding: 5px; font-size: 14px; width: 140px; background: rgba(0,0,0,0.3); color: #fff; border: 1px solid rgba(255,255,255,0.2);" onchange="changeOrderStatus(${order.id}, this.value)">
+                                    ${statusOptions}
+                                </select>
+                            </td>
+                            
+                            <td class="admin_actions_cell">
+                                <button class="action_delete" onclick="deleteOrder(${order.id})">🗑️ Видалити</button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            } catch (error) {
+                console.error('Помилка завантаження замовлень:', error);
+            }
+        }
+
+        // Нова функція для відправки статусу на сервер
+        async function changeOrderStatus(orderId, newStatus) {
+            try {
+                const response = await fetch(`/api/orders/${orderId}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                
+                if (!response.ok) {
+                    alert('Помилка при оновленні статусу!');
+                    fetchAdminOrders(); // Повертаємо старий статус, якщо помилка
+                }
+            } catch (error) {
+                console.error('Помилка:', error);
+            }
+        }
+
+        // Видалення замовлення
+        async function deleteOrder(id) {
+            if (!confirm('Ви впевнені, що хочете видалити це замовлення?')) return;
+            try {
+                const response = await fetch(`/api/orders/${id}`, { method: 'DELETE' });
+                if (response.ok) {
+                    fetchAdminOrders(); // Оновлюємо таблицю
+                }
+            } catch (error) {
+                console.error('Помилка:', error);
+            }
+        }
+
+        linkUsers.addEventListener('click', (e) => {
+        e.preventDefault();
+        // Активуємо посилання
+        [linkProducts, linkOrders, linkUsers].forEach(l => l.classList.remove('active_admin_link'));
+        linkUsers.classList.add('active_admin_link');
+        
+        // Показуємо потрібний контент
+        tabProducts.style.display = 'none';
+        tabOrders.style.display = 'none';
+        tabUsers.style.display = 'block';
+        
+        mainAddBtn.style.display = 'none'; // Ховаємо кнопку "Додати товар"
+        pageTitle.textContent = 'Управління користувачами';
+        
+        fetchAdminUsers(); // Завантажуємо дані
+    });
+
+    async function fetchAdminUsers() {
+    try {
+        const response = await fetch('/api/users');
+        const users = await response.json();
+        
+        adminUsersTable.innerHTML = ''; 
+
+        users.forEach(user => {
+            const date = new Date(user.created_at).toLocaleDateString('uk-UA');
+            const row = `
+                <tr>
+                    <td><strong>#U${user.id}</strong></td>
+                    <td>${user.name}</td>
+                    <td>
+                        <div>${user.email}</div>
+                        <div style="color: #b0b0b0; font-size: 13px;">${user.phone}</div>
+                    </td>
+                    <td>${date}</td>
+                    <td class="admin_actions_cell">
+                        <button class="action_delete" onclick="deleteUser(${user.id})">🗑️ Видалити</button>
+                    </td>
+                </tr>
+            `;
+            adminUsersTable.innerHTML += row;
+        });
+        } catch (error) {
+            console.error('Помилка завантаження користувачів:', error);
+            }
+    }
+
+    async function deleteUser(id) {
+        if (!confirm('Ви впевнені, що хочете видалити цього користувача?')) return;
+        try {
+            const response = await fetch(`/api/users/${id}`, { method: 'DELETE' });
+            if (response.ok) fetchAdminUsers(); 
+        } catch (error) {
+            console.error('Помилка:', error);
+        }
+    }
+
+    async function fetchDashboardStats() {
+        try {
+            const response = await fetch('/api/admin/stats');
+            const stats = await response.json();
+            document.getElementById('stat_new_orders').textContent = stats.newOrders;
+            document.getElementById('stat_total_users').textContent = stats.totalUsers;
+        } catch (err) { console.error(err); }
+    }
+
+    // Вызывай её при загрузке страницы
+    fetchDashboardStats();
+    </script>
+</body>
+</html>
