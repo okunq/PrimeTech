@@ -44,11 +44,10 @@ app.post('/api/upload', upload.single('image'), (req, res) => {
 
 
 const pool = new Pool({
-    user: 'postgres',     
-    password: '9998', 
-    host: 'localhost',       
-    port: 5432,             
-    database: 'primetech_db'  
+    connectionString: 'postgresql://neondb_owner:npg_ouRHzGB8S2XK@ep-spring-darkness-alce3h0t.c-3.eu-central-1.aws.neon.tech/neondb?sslmode=require',
+    ssl: {
+        rejectUnauthorized: false
+    }
 });
 
 //оновлений маршрут для замовлення та товарів
