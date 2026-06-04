@@ -265,7 +265,7 @@ function checkAuth() {
                     transition: all 0.3s;
                 " onmouseover="this.style.background='#FFD700'; this.style.color='#000'" 
                    onmouseout="this.style.background='transparent'; this.style.color='#FFD700'">
-                    Адмінка
+                    Адмін
                 </a>`;
         }
 
