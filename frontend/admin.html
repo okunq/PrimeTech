@@ -259,7 +259,7 @@
             
             const productData = {
                 name: document.getElementById('new_name').value,
-                category_id: document.getElementById('new_category').value,
+                category_id: document.getElementById('category_id').value, // <-- ВПИСАВ ПРАВИЛЬНИЙ ID
                 price: document.getElementById('new_price').value,
                 image_url: finalImageUrl, 
                 status: document.getElementById('new_status').value,
@@ -300,7 +300,7 @@
             editingProductId = id; 
             
             document.getElementById('new_name').value = name;
-            document.getElementById('new_category').value = categoryId;
+            document.getElementById('category_id').value = categoryId;
             document.getElementById('new_price').value = price;
             
             
