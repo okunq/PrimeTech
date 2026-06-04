@@ -221,7 +221,7 @@ app.get('/api/categories', async (req, res) => {
         res.json(result.rows);
     } catch (err) {
         console.error('Помилка отримання категорій:', err);
-        res.status(500).json({ error: 'Помилка сервера' });
+        res.status(500).json({ error: 'Помилка бази даних' });
     }
 });
 
