@@ -238,6 +238,36 @@ function updateCartUI() {
     if (cartTotalSpan) cartTotalSpan.textContent = totalSum.toFixed(2) + ' ₴';
 }
 
+// Функція для завантаження категорій
+async function loadCategories() {
+    try {
+        const response = await fetch('/api/categories');
+        const categories = await response.json();
+        
+        const selectElement = document.getElementById('category_id');
+        
+        // Очищаємо список перед додаванням
+        selectElement.innerHTML = '<option value="" disabled selected>Оберіть категорію</option>';
+        
+        // Перебираємо кожну категорію з БД і створюємо <option>
+        categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category.id; // Це той самий ID з бази (1, 2, 3...)
+            option.textContent = category.name; // Це назва (Ноутбуки, Смартфони...)
+            selectElement.appendChild(option);
+        });
+        
+    } catch (error) {
+        console.error('Помилка завантаження категорій:', error);
+        document.getElementById('category_id').innerHTML = '<option value="" disabled>Помилка завантаження</option>';
+    }
+}
+
+// Запускаємо функцію, коли сторінка адмінки завантажилась
+document.addEventListener('DOMContentLoaded', () => {
+    loadCategories();
+});
+
 function checkAuth() {
     const user = JSON.parse(localStorage.getItem('user'));
     const accountLink = document.querySelector('.account_link a');

@@ -214,6 +214,17 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+// Отримання всіх категорій для адмінки
+app.get('/api/categories', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM categories ORDER BY id ASC');
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Помилка отримання категорій:', err);
+        res.status(500).json({ error: 'Помилка сервера' });
+    }
+});
+
 //Упраіння замовленнями та користувачами (для адміна)
 
 //отримати всі замовлення з товарами
