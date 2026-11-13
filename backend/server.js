@@ -13,10 +13,10 @@ app.use(express.json());
 //шлях до папки frontend
 const publicPath = path.join(__dirname, '../frontend');
 
-console.log("========================================");
-console.log("📂 Сервер шукає файли у цій папці:");
+
+console.log("Сервер шукає файли у цій папці:");
 console.log(publicPath);
-console.log("========================================");
+
 
 //роздаємо всі статичні файли з папки frontend
 app.use(express.static(publicPath));
@@ -388,5 +388,5 @@ app.use((req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Сервер PrimeTech успешно запущен на порту http://localhost:${PORT}`);
+    console.log(`Сервер PrimeTech запущено на порту http://localhost:${PORT}`);
 });
