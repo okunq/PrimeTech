@@ -17,7 +17,7 @@
             window.location.href = 'auto.html';
         } else if (currentUser.email !== ADMIN_EMAIL) {
             
-            alert('🛑 Доступ заборонено! Ця сторінка тільки для адміністраторів.');
+            alert('Доступ заборонено! Ця сторінка тільки для адміністраторів.');
             window.location.href = 'catalog.html';
         }
     </script>
@@ -29,10 +29,10 @@
         <aside class="admin_sidebar">
             <a href="catalog.html" class="logo admin_logo">PrimeTech</a>
             <nav class="admin_nav">
-                <a href="#" class="active_admin_link" id="link_products">📦 Товари</a>
-                <a href="#" id="link_orders">🛒 Замовлення</a>
-                <a href="#" id="link_users">👥 Користувачі</a>
-                <a href="#">⚙️ Налаштування</a>
+                <a href="#" class="active_admin_link" id="link_products">Товари</a>
+                <a href="#" id="link_orders">Замовлення</a>
+                <a href="#" id="link_users">Користувачі</a>
+                <a href="#">Налаштування</a>
             </nav>
             <a href="catalog.html" class="admin_exit">Вийти в магазин</a>
         </aside>
@@ -77,7 +77,7 @@
                 
                 <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
                     <a href="/api/admin/export-orders" class="auth_submit_btn" style="text-decoration: none; width: auto; padding: 10px 20px; background: #4CAF50; margin-top: 0; display: inline-block;">
-                        📥 Скачати звіт (CSV)
+                        Скачати звіт (CSV)
                     </a>
                 </div>
 
